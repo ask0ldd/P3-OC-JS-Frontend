@@ -153,13 +153,6 @@ header {
   flex-wrap: wrap;
 }
 
-#editionmode__topbar {
-  height: 60px;
-  width: 100%;
-  background-color: #000;
-  flex-shrink: 0;
-}
-
 section {
   margin: 50px 0;
 }
@@ -212,7 +205,7 @@ li:hover {
 #introduction figure {
   flex: 1;
 }
-#introduction img {
+#introduction figure #sophie {
   display: block;
   margin: auto;
   width: 80%;
@@ -220,11 +213,6 @@ li:hover {
 
 #introduction article {
   flex: 1;
-}
-
-.edit__icon {
-  height: 18px;
-  width: 18px;
 }
 
 #introduction h2 {
@@ -266,6 +254,11 @@ li:hover {
   font-family: "Syne";
   font-size: 16px;
   font-weight: 700;
+}
+
+.filter:hover {
+  background-color: #0e2f28;
+  color: #fffef8;
 }
 
 .filter--on {
@@ -320,10 +313,103 @@ input[type="submit"] {
   width: 180px;
   text-align: center;
   border-radius: 60px;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: #0e2f28;
+  color: #fffef8;
 }
 
 footer nav ul {
   display: flex;
   justify-content: flex-end;
   margin: 2em;
+}
+
+.forgot__password {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+/*
+
+EDIT MODE CLASSES
+
+*/
+
+.edit__icon {
+  height: 18px;
+  width: 18px;
+  visibility: hidden;
+}
+
+.edit__icon--on {
+  visibility: visible;
+  cursor: pointer;
+}
+
+.editionmode__topbar {
+  height: 60px;
+  width: 100%;
+  background-color: #000;
+  flex-shrink: 0;
+  display: none;
+}
+
+.editionmode__topbar--on {
+  display: block;
+}
+
+.header__padding--notopBar {
+  padding-top: 50px;
+}
+
+#opaque__container {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  /*display: flex;*/
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+
+/*.opaque__container--visible {
+  display: flex;
+}*/
+
+#edition__gallery__container {
+  height: 730px;
+  width: 630px;
+  max-width: 100vh;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 64px 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#edition__gallery {
+  display: flex;
+  gap: 8px;
+  max-width: 422px;
+  flex-wrap: wrap;
+}
+
+#edition__gallery .work__img {
+  height: 104px;
+  width: 78px;
+}
+
+#edition__gallery .bin__icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 17px;
+  width: 17px;
 }

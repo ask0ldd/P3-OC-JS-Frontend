@@ -11,14 +11,14 @@
 	<link rel="stylesheet" href="./assets/style.css">
 	<script type="text/javascript" src="script.js" defer></script>
 </head>
-<body onload="filterWork(0)">
-<header>
-	<div id="editionmode__topbar"></div>
+<body onload="indexOnLoad()">
+<header id="header" class="header__padding--notopBar">
+	<div class="editionmode__topbar"></div>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
-			<li>projets</li>
-			<li>contact</li>
+			<li><a href="#">projets</a></li>
+			<li><a href="#">contact</a></li>
 			<li><a href="log.html">login</a></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
@@ -27,10 +27,11 @@
 <main>
 	<section id="introduction">
 		<figure>
-			<img src="./assets/images/sophie-bluel.png" alt="">
+			<img id="sophie" src="./assets/images/sophie-bluel.png" alt="sophie">
+			<img src="./assets/icons/edit.svg" class="edit__icon" onclick="switchToEditMode()">
 		</figure>
 		<article>
-			<img src="./assets/icons/edit.svg" class="edit__icon">
+			<img src="./assets/icons/edit.svg" class="edit__icon">modifier <!--a centrer-->
 			<h2>Designer d'espace</h2>
 			<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison finale du chantier.</p>
 			<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
@@ -109,5 +110,11 @@
 		</ul>
 	</nav>
 </footer>
+
+<aside id="opaque__container">
+	<div id="edition__gallery__container">
+		<div id="edition__gallery"></div>
+	</div>
+</aside>
 </body>
 </html>
