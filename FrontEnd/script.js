@@ -26,10 +26,22 @@ function emptyFilters()
     filtersContainer.innerHTML=""
 }
 
-// !!! deal with errors + add async await
-// selectedCategoryId 0 = no filter
-async function filterWork(selectedCategoryId){
+function tokenExists()
+{
+    let cookie = document.cookie
+    //console.log(typeof(cookie))
+    return cookie.search("token")===-1 ? false : true
+}
 
+function getUniqueCategories(arr)
+{
+    let pushedIds = []
+}
+
+// !!! deal with errors
+// selectedCategoryId 0 = no filter
+async function filterWork(selectedCategoryId)
+{
     await fetch(`${api}works`).then((response)=>{
         //console.log(response.ok)
         return response.json()
@@ -54,7 +66,7 @@ async function filterWork(selectedCategoryId){
                 galleryContainer.append(work)
             }
     
-            //essayer de faire la mm chose avec set
+            // try get same result with set
             // push a category {id, name} only if the current id hasn't been pushed yet
             if(pushedIds.includes(data[i].category.id) === false)
             {
@@ -82,16 +94,18 @@ async function filterWork(selectedCategoryId){
     }).catch(error => {
         //element.parentElement.innerHTML = `Error: ${error}`;
         //console.error('There was an error!', error);
-
+        console.log(error)
         //implement can't load gallery in the gallery div
     })
 }
 
-async function log(login, password){
+async function log(login, password)
+{
 
     let logs = {"email": login, "password": password}
 
-    let response = await fetch(`${api}users/login`, {
+    let response = await fetch(`${api}users/login`, 
+    {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
@@ -103,22 +117,37 @@ async function log(login, password){
         referrerPolicy: 'no-referrer',
         body: JSON.stringify(logs)        
     })
-
+    console.log(response.ok)
     return await response.json()
 
 }
 
 //MAIN
 
-filterWork(0) // 0 = All
+//filterWork(0) // 0 = All
 
 let user
 
-loginButton.addEventListener("click", () => log(email, password).then((userDatas) => {user = userDatas}))
+/*loginButton.addEventListener("click", () => log(email, password).then((userDatas) => {
+    user = userDatas
+    document.cookie = `id=${userDatas.id}; token=${userDatas.token}; Secure`;
+}))
 contactButton.addEventListener("click", () => {
     if(user === undefined){
         console.log("LOG FIRST")
     }else{
         console.log(user)
     }
-})
+})*/
+
+function tryLog ()
+{
+    console.log('trying to log sir')
+    log(email, password).then((userDatas) => 
+    {
+        //if(user === undefined){}
+        document.cookie = `id=${userDatas.userId}; Secure`;
+        document.cookie = `token=${userDatas.token}; Secure`;
+        //window.location.href = "index.html"
+    })
+}
