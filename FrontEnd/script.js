@@ -14,10 +14,9 @@ const editGallery = document.querySelector("#edition__gallery")
 const user = {'email':'sophie.bluel@test.tld','password':'S0phie'}
 const unauthorizedUser = {'email':'ezaeaz.ezaeza@test.tld','password':'ezaeza'}
 
-// creer class pr gallery edit avec ts les elements
-// creer classe gallery edit, populate, add to gallery
 
 class Gallery {
+
     constructor(gallerySelector, filtersSelector) 
     {
         this.galleryContainer = document.querySelector(gallerySelector)
@@ -26,13 +25,19 @@ class Gallery {
         this.selectedCategory = 0;
     }
 
+    setSelectedCategory(selectedCategory)
+    {
+        this.selectedCategory = selectedCategory;
+    }
+
+    // REMOVE GALLERY AND/OR FILTERS OUT OF THE DOM
     clear(container)
     {
         switch(container) {
             case "gallery":
                 while (this.galleryContainer.lastElementChild) 
                 {
-                    this.galleryContainer.removeChild(this.galleryContainer.lastElementChild);
+                    this.galleryContainer.removeChild(this.galleryContainer.lastElementChild); // No innerHTML="" to kill all addeventlistener attached to the childs
                 }
             break;
             case "filters":
@@ -53,37 +58,51 @@ class Gallery {
         }
     }
 
+    // ADD A FILTER TO THE DOM
     addFilter(filterName, filterId)
     {
+        //remplacer divs par buttons
         let button = document.createElement("div")
         button.textContent = filterName
-        button.addEventListener("click", () => populateFiltersnGallery(filterId))
+        button.addEventListener("click", () => 
+        {
+            populateFiltersnGallery(filterId)
+        })
         button.classList.add("filter")
         this.selectedCategory === filterId ? button.classList.add("filter--on") : button.classList.add("filter--off")
         this.filtersContainer.append(button)
     }
 
-    refreshFilters(categories, selectedCategory)
+    // ADD AN ARRAY OF FILTERS TO THE DOM
+    updateFilters(categories, selectedCategory)
     {
-        this.selectedCategory = selectedCategory
+        this.setSelectedCategory(selectedCategory)
         this.clear("filters")
-        console.log("test")
         this.addFilter("Tous", 0)
         categories.forEach(element => this.addFilter(element.name, element.id))
     }
 
-    addWork(work)
+    // ADD A PICTURE TO THE DOM
+    addToGallery(work)
     {
-
+        let figure = document.createElement("figure")
+        figure.innerHTML = `<img src="${work.imageUrl}" alt="${work.title}" crossorigin="anonymous"><figcaption>${work.title}</figcaption>` // crossorigin : CORS
+        this.galleryContainer.append(figure) // verifier que gallery container exists
     }
 
-    addWorks(works)
+    // ADD FILTERED FICTURES TO THE DOM
+    updateGallery(works, selectedCategory)
     {
-
+        this.setSelectedCategory(selectedCategory)
+        for(let i=0; i<Object.keys(works).length; i++){
+            // add to gallery works with id === selectedCategoryId or all works if selectedCategoryId === 0
+            if((works[i].category.id === this.selectedCategory)||(this.selectedCategory === 0)) {this.addToGallery(works[i])}
+        }
     }
+
 }
 
-function emptyGallery()
+/*function emptyGallery()
 {
     galleryContainer.innerHTML=""
 }
@@ -91,14 +110,12 @@ function emptyGallery()
 function emptyFilters()
 {
     filtersContainer.innerHTML=""
-}
+}*/
 
 function isTokenAlive()
 {
     //gerer si pas de cookie ou cookie pas string
     const cookie = document.cookie
-    /*console.log(typeof(cookie))
-    console.log(cookie)*/
     return cookie.search("token")===-1 ? false : true
 }
 
@@ -182,7 +199,6 @@ async function populateModaleGallery()
 }
 
 // !!! deal with errors
-// selectedCategoryId 0 = no filter
 async function populateFiltersnGallery(selectedCategoryId)
 {
     await fetch(`${api}works`).then((response)=>{
@@ -191,28 +207,16 @@ async function populateFiltersnGallery(selectedCategoryId)
     }).then((data) => {
 
         // check if response 200 or 500 ?
-        //console.log(data)
-    
         let categories = []
         let pushedIds = []
 
-        emptyGallery()
-        //emptyFilters()
-        
-        //console.log(data)
-        //console.log(typeof(data))
+        gallery.clear("gallery")
+        gallery.clear("filters")
+
+        gallery.updateGallery(data, selectedCategoryId)
     
         for(let i=0; i<Object.keys(data).length; i++)
-        {
-            let work = document.createElement("figure");
-            
-            // select works where id === selectedCategoryId or all works if selectedCategoryId === 0
-            if((data[i].category.id === selectedCategoryId)||(selectedCategoryId === 0)) {
-                work.innerHTML = `<img src="${data[i].imageUrl}" alt="${data[i].title}" crossorigin="anonymous"><figcaption>${data[i].title}</figcaption>` // CORS
-                //verifier que gallerycontainer exist
-                galleryContainer.append(work)
-            }
-    
+        {   
             // try get same result with set
             // push a category {id, name} only if the current id hasn't been pushed yet
             if(pushedIds.includes(data[i].category.id) === false)
@@ -222,25 +226,7 @@ async function populateFiltersnGallery(selectedCategoryId)
             }
         }
     
-    // generate buttons
-        let buttonAll = document.createElement("div")
-        buttonAll.textContent = "Tous"
-        buttonAll.classList.add("filter")
-        selectedCategoryId === 0 ? buttonAll.classList.add("filter--on") : buttonAll.classList.add("filter--off")
-        buttonAll.addEventListener("click", () => populateFiltersnGallery(0))
-        filtersContainer.append(buttonAll)
-
-        // remplacer div par buttons
-        /*
-        categories.forEach(element => { 
-            let button = document.createElement("div")
-            button.textContent = element.name
-            button.addEventListener("click", () => populateFiltersnGallery(element.id))
-            button.classList.add("filter")
-            selectedCategoryId === element.id ? button.classList.add("filter--on") : button.classList.add("filter--off")
-            filtersContainer.append(button)
-        })*/
-        gallery.refreshFilters(categories, selectedCategoryId)
+        gallery.updateFilters(categories, selectedCategoryId)
 
     }).catch(error => {
         //console.error('There was an error!', error);
@@ -312,7 +298,6 @@ function openModale(){
     scrollLock(true)
     opaqueContainer.style.display="flex"
     populateModaleGallery()
-    gallery.clear("gallery")
 }
 
 function closeModale(){
