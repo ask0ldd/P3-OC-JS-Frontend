@@ -254,6 +254,7 @@ li:hover {
   font-family: "Syne";
   font-size: 16px;
   font-weight: 700;
+  border: 1px solid #1d6154;
 }
 
 .filter:hover {
@@ -268,7 +269,7 @@ li:hover {
 
 .filter--off {
   background: #fffef8;
-  border: 1px solid #1d6154;
+  /*border: 1px solid #1d6154;*/
   color: #1d6154;
   cursor: pointer;
 }
@@ -367,8 +368,8 @@ EDIT MODE CLASSES
 
 #opaque__container {
   width: 100vw;
-  height: 100vh;
-  position: absolute;
+  height: 100%;
+  position: fixed;
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.3);
@@ -376,34 +377,35 @@ EDIT MODE CLASSES
   align-items: center;
   justify-content: center;
   display: none;
+  overflow: auto;
 }
 
-/*.opaque__container--visible {
-  display: flex;
-}*/
-
-#edition__gallery__container {
-  height: 730px;
+#modale__container {
+  height: fit-content;
+  flex-shrink: 0;
+  /*max-height: 80vh;*/
   width: 630px;
   max-width: 100vh;
   background-color: #fff;
   border-radius: 10px;
-  padding: 64px 100px;
+  padding: 32px 36px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
 #edition__gallery {
   display: flex;
-  gap: 8px;
+  gap: 13px 8px;
   max-width: 422px;
   flex-wrap: wrap;
 }
 
-#edition__gallery .work__img {
+#edition__gallery .thumb {
   height: 104px;
   width: 78px;
+  object-fit: cover;
 }
 
 #edition__gallery .bin__icon {
@@ -412,4 +414,44 @@ EDIT MODE CLASSES
   right: 0;
   height: 17px;
   width: 17px;
+  cursor: pointer;
+}
+
+#modale__backnClose {
+  height: 14px;
+  display: flex;
+  justify-content: space-between;
+  width: 564px;
+}
+
+#modale__title {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 30px;
+  text-align: center;
+  margin: 24px 0 36px 0;
+}
+
+.modale__hr {
+  width: 420px;
+  margin-top: 48px;
+}
+
+.modale__button {
+  border-radius: 60px;
+  padding: 10px 48px;
+  font-family: "Syne";
+  font-size: 14px;
+  font-weight: 700;
+  background-color: #1d6154;
+  border: 1px solid #1d6154;
+  cursor: pointer;
+  color: #fffef8;
+  margin-top: 30px;
+}
+
+.modale__button:hover {
+  background-color: #0e2f28;
 }

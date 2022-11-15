@@ -1,4 +1,5 @@
 const api = 'http://localhost:5678/api/'
+
 const galleryContainer = document.querySelector(".gallery")
 const filtersContainer = document.querySelector(".filters")
 const loginButton = document.querySelector("nav > ul > li:nth-child(3)")
@@ -6,7 +7,7 @@ const contactButton = document.querySelector("nav > ul > li:nth-child(2)")
 const editIcon = document.querySelectorAll(".edit__icon")
 const editTopBar = document.querySelector(".editionmode__topbar")
 const header = document.querySelector("#header")
-const editModeContainer = document.querySelector("#opaque__container")
+const opaqueContainer = document.querySelector("#opaque__container")
 const editGallery = document.querySelector("#edition__gallery")
 
 // delete final upload
@@ -14,7 +15,73 @@ const user = {'email':'sophie.bluel@test.tld','password':'S0phie'}
 const unauthorizedUser = {'email':'ezaeaz.ezaeza@test.tld','password':'ezaeza'}
 
 // creer class pr gallery edit avec ts les elements
+// creer classe gallery edit, populate, add to gallery
 
+class Gallery {
+    constructor(gallerySelector, filtersSelector) 
+    {
+        this.galleryContainer = document.querySelector(gallerySelector)
+        this.filtersContainer = document.querySelector(filtersSelector)
+        this.filterButtons = []
+        this.selectedCategory = 0;
+    }
+
+    clear(container)
+    {
+        switch(container) {
+            case "gallery":
+                while (this.galleryContainer.lastElementChild) 
+                {
+                    this.galleryContainer.removeChild(this.galleryContainer.lastElementChild);
+                }
+            break;
+            case "filters":
+                while (this.filtersContainer.lastElementChild) 
+                {
+                    this.filtersContainer.removeChild(this.filtersContainer.lastElementChild);
+                }
+            break;
+            default:
+                while (this.filtersContainer.lastElementChild) 
+                {
+                    this.filtersContainer.removeChild(this.filtersContainer.lastElementChild);
+                }
+                while (this.galleryContainer.lastElementChild) 
+                {
+                    this.galleryContainer.removeChild(this.galleryContainer.lastElementChild);
+                }
+        }
+    }
+
+    addFilter(filterName, filterId)
+    {
+        let button = document.createElement("div")
+        button.textContent = filterName
+        button.addEventListener("click", () => populateFiltersnGallery(filterId))
+        button.classList.add("filter")
+        this.selectedCategory === filterId ? button.classList.add("filter--on") : button.classList.add("filter--off")
+        this.filtersContainer.append(button)
+    }
+
+    refreshFilters(categories, selectedCategory)
+    {
+        this.selectedCategory = selectedCategory
+        this.clear("filters")
+        console.log("test")
+        this.addFilter("Tous", 0)
+        categories.forEach(element => this.addFilter(element.name, element.id))
+    }
+
+    addWork(work)
+    {
+
+    }
+
+    addWorks(works)
+    {
+
+    }
+}
 
 function emptyGallery()
 {
@@ -26,7 +93,7 @@ function emptyFilters()
     filtersContainer.innerHTML=""
 }
 
-function tokenAlive()
+function isTokenAlive()
 {
     //gerer si pas de cookie ou cookie pas string
     const cookie = document.cookie
@@ -54,7 +121,7 @@ function getUniqueCategories(obj)
     return categories
 }
 
-function getWorks(obj)
+function extractWorks(obj)
 {
     let works = []
 
@@ -68,12 +135,29 @@ function getWorks(obj)
             })
     }
 
-    console.log(works)
+    //console.log(works)
     return works
 
 }
 
-async function populateEditGallery()
+function deleteWork(workId){
+    console.log("work deleted : ", workId)
+}
+
+function getModaleThumbnail(work){
+
+    let div = document.createElement("div")
+    div.style.position="relative"
+    div.innerHTML=`
+    <div style="display:flex; flex-direction:column;">
+    <img class="thumb" src="${work.url}" crossorigin="anonymous">
+    <a href="#" style="font-size:12px; margin-top:4px;">éditer</a>
+    <img class="bin__icon" src="./assets/icons/bin_icon.png" onclick="deleteWork(${work.id})">
+    `
+    return div
+}
+
+async function populateModaleGallery()
 {
     await fetch(`${api}works`).then((response)=>{
         return response.json()
@@ -83,23 +167,13 @@ async function populateEditGallery()
         editGallery.innerHTML=""
 
         // get works as an array of objects of data
-        const works = getWorks(data)
+        const works = extractWorks(data)
 
 
         works.forEach(work => 
         {
-            let div = document.createElement("div")
-            let img = document.createElement("img")
-            let bin_icon = document.createElement("img")
-            div.style.position="relative"
-            img.crossOrigin="anonymous"
-            img.src=work.url
-            img.classList.add("work__img")
-            bin_icon.src = "./assets/icons/bin_icon.png"
-            bin_icon.classList.add("bin__icon")
-            div.append(img)
-            div.append(bin_icon)
-            editGallery.append(div)
+            let thumb = getModaleThumbnail(work)
+            editGallery.append(thumb)
         })
 
     }).catch(error => {
@@ -109,7 +183,7 @@ async function populateEditGallery()
 
 // !!! deal with errors
 // selectedCategoryId 0 = no filter
-async function filterWork(selectedCategoryId)
+async function populateFiltersnGallery(selectedCategoryId)
 {
     await fetch(`${api}works`).then((response)=>{
         //console.log(response.ok)
@@ -123,10 +197,10 @@ async function filterWork(selectedCategoryId)
         let pushedIds = []
 
         emptyGallery()
-        emptyFilters()
+        //emptyFilters()
         
-        console.log(data)
-        console.log(typeof(data))
+        //console.log(data)
+        //console.log(typeof(data))
     
         for(let i=0; i<Object.keys(data).length; i++)
         {
@@ -148,26 +222,28 @@ async function filterWork(selectedCategoryId)
             }
         }
     
+    // generate buttons
         let buttonAll = document.createElement("div")
         buttonAll.textContent = "Tous"
         buttonAll.classList.add("filter")
         selectedCategoryId === 0 ? buttonAll.classList.add("filter--on") : buttonAll.classList.add("filter--off")
-        buttonAll.addEventListener("click", () => filterWork(0))
+        buttonAll.addEventListener("click", () => populateFiltersnGallery(0))
         filtersContainer.append(buttonAll)
 
         // remplacer div par buttons
+        /*
         categories.forEach(element => { 
             let button = document.createElement("div")
             button.textContent = element.name
-            button.addEventListener("click", () => filterWork(element.id))
+            button.addEventListener("click", () => populateFiltersnGallery(element.id))
             button.classList.add("filter")
             selectedCategoryId === element.id ? button.classList.add("filter--on") : button.classList.add("filter--off")
             filtersContainer.append(button)
-        })
+        })*/
+        gallery.refreshFilters(categories, selectedCategoryId)
+
     }).catch(error => {
-        //element.parentElement.innerHTML = `Error: ${error}`;
         //console.error('There was an error!', error);
-        console.log(error)
         //implement can't load gallery in the gallery div
     })
 }
@@ -175,7 +251,7 @@ async function filterWork(selectedCategoryId)
 async function log(login, password)
 {
 
-    let logs = {"email": login, "password": password}
+    let logs = {"email": user.email, "password": user.password}
 
     let response = await fetch(`${api}users/login`, 
     {
@@ -190,7 +266,7 @@ async function log(login, password)
         referrerPolicy: 'no-referrer',
         body: JSON.stringify(logs)        
     })
-    console.log(response.ok)
+    //console.log(response.ok)
     return await response.json()
 
 }
@@ -199,28 +275,15 @@ function showEditButtonsonIndex(){
     editIcon.forEach(el => 
         {
             el.classList.toggle('edit__icon--on')
-            //el.addEventListener('click', populateEditGallery())
+            //el.addEventListener('click', populateModaleGallery())
         })
     editTopBar.classList.toggle('editionmode__topbar--on')
     header.classList.toggle('header__padding--notopBar')
 }
 
-//MAIN
-
-/*loginButton.addEventListener("click", () => log(email, password).then((userDatas) => {
-    user = userDatas
-    document.cookie = `id=${userDatas.id}; token=${userDatas.token}; Secure`;
-}))
-contactButton.addEventListener("click", () => {
-    if(user === undefined){
-        console.log("LOG FIRST")
-    }else{
-        console.log(user)
-    }
-})*/
-
 function tryLog ()
 {
+    //$event.preventDefault()
     //console.log('trying to log sir')
     log(email, password).then((userDatas) => 
     {
@@ -231,23 +294,37 @@ function tryLog ()
     })
 }
 
-function scrollLock(){
-    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-    window.onscroll = function() {
-        window.scrollTo(scrollLeft, scrollTop);
-    };
+function scrollLock(bool){
+    if(bool)
+    {
+        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+        window.onscroll = () => {
+            window.scrollTo(scrollLeft, scrollTop);
+        };
+    }else{
+        window.onscroll = () => {}
+    }
 }
 
-function switchToEditMode(){
-    scrollLock()
-    //editModeContainer.classList.toggle('opaque__container--visible')
-    editModeContainer.style.display="flex"
-    populateEditGallery()
-
+//class modale avec open & close, avec add to body, avec empty, setTitle, avec set button value, set button color, avec loadtemplate
+function openModale(){
+    scrollLock(true)
+    opaqueContainer.style.display="flex"
+    populateModaleGallery()
+    gallery.clear("gallery")
 }
 
-function indexOnLoad(){
-    filterWork(0)
-    tokenAlive() ? showEditButtonsonIndex() : false
+function closeModale(){
+    //depopulate gallery / titre / boutons
+    opaqueContainer.style.display="none"
+    scrollLock(false)
 }
+
+function onloadIndex(){
+    gallery = new Gallery(".gallery",".filters")
+    populateFiltersnGallery(0)
+    isTokenAlive() ? showEditButtonsonIndex() : false
+}
+
+let gallery
