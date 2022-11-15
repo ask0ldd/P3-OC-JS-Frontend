@@ -263,12 +263,12 @@ li:hover {
   color: #fffef8;
 }
 
-.filter--on {
+.filter--selected {
   background: #1d6154;
   color: #fffef8;
 }
 
-.filter--off {
+.filter--unselected {
   background: #fffef8;
   /*border: 1px solid #1d6154;*/
   color: #1d6154;

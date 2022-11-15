@@ -28,7 +28,7 @@
 	<section id="introduction">
 		<figure>
 			<img id="sophie" src="./assets/images/sophie-bluel.png" alt="sophie">
-			<img src="./assets/icons/edit.svg" class="edit__icon" onclick="openModale()">
+			<img src="./assets/icons/edit.svg" class="edit__icon" onclick="modale.open()">
 		</figure>
 		<article>
 			<img src="./assets/icons/edit.svg" class="edit__icon">modifier <!--a centrer-->
@@ -115,7 +115,7 @@
 	<!--<div onclick="closeModale">x</div>-->
 	<div id="modale__container">
 		<div id="modale__backnClose">
-			<span>x-</span><span style="cursor: pointer;" onclick="closeModale()">x</span>
+			<span>x-</span><span style="cursor: pointer;" onclick="modale.close()">x</span>
 		</div>
 		<span id="modale__title">Title</span>
 		<div id="edition__gallery"></div> <!-- body modale -->
