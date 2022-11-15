@@ -10,6 +10,8 @@ const header = document.querySelector("#header")
 const opaqueContainer = document.querySelector("#opaque__container")
 const editGallery = document.querySelector("#edition__gallery")
 
+let gallery
+
 // delete final upload
 const user = {'email':'sophie.bluel@test.tld','password':'S0phie'}
 const unauthorizedUser = {'email':'ezaeaz.ezaeza@test.tld','password':'ezaeza'}
@@ -17,15 +19,17 @@ const unauthorizedUser = {'email':'ezaeaz.ezaeza@test.tld','password':'ezaeza'}
 
 class Gallery {
 
+    #selectedCategory
+
     constructor(gallerySelector, filtersSelector) 
     {
         this.galleryContainer = document.querySelector(gallerySelector)
         this.filtersContainer = document.querySelector(filtersSelector)
         this.filterButtons = []
-        this.selectedCategory = 0;
+        this.#selectedCategory = 0;
     }
 
-    setSelectedCategory(selectedCategory)
+    #setSelectedCategory(selectedCategory = 0)
     {
         this.selectedCategory = selectedCategory;
     }
@@ -63,14 +67,14 @@ class Gallery {
     }
 
     // INSERT A FILTER TO THE DOM
-    addFilter(filterName, filterId)
+    #addFilter(filterName, filterId)
     {
         //remplacer divs par buttons
         let button = document.createElement("div")
         button.textContent = filterName
         button.addEventListener("click", () => 
         {
-            populateFiltersnGallery(filterId)
+            this.displayFilteredGallery(filterId)
         })
         button.classList.add("filter")
         this.selectedCategory === filterId ? button.classList.add("filter--on") : button.classList.add("filter--off")
@@ -78,16 +82,16 @@ class Gallery {
     }
 
     // INSERT ALL FILTERS WITHOUT DUPLICATES TO THE DOM / MARK THE ACTIVE ONE
-    updateFilters(categories, selectedCategory)
+    updateFilters(categories, selectedCategory = 0)
     {
-        this.setSelectedCategory(selectedCategory)
+        this.#setSelectedCategory(selectedCategory)
         this.clear("filters")
-        this.addFilter("Tous", 0)
-        categories.forEach(element => this.addFilter(element.name, element.id))
+        this.#addFilter("Tous", 0)
+        categories.forEach(element => this.#addFilter(element.name, element.id))
     }
 
     // INSERT A PICTURE TO THE DOM
-    addToGallery(work)
+    #addToGallery(work)
     {
         let figure = document.createElement("figure")
         figure.innerHTML = `<img src="${work.imageUrl}" alt="${work.title}" crossorigin="anonymous"><figcaption>${work.title}</figcaption>` // crossorigin : CORS
@@ -95,18 +99,18 @@ class Gallery {
     }
 
     // INSERT A GROUP OF SELECTED FICTURES TO THE DOM
-    updateGallery(works, selectedCategory)
+    updateGallery(works, selectedCategory = 0)
     {
-        this.setSelectedCategory(selectedCategory)
+        this.#setSelectedCategory(selectedCategory)
         this.clear("gallery")
         for(let i=0; i<Object.keys(works).length; i++){
-            // add to gallery works with id === selectedCategoryId or all works if selectedCategoryId === 0
-            if((works[i].category.id === this.selectedCategory)||(this.selectedCategory === 0)) {this.addToGallery(works[i])}
+            // filtering works / 0 = no filter
+            if((works[i].category.id === this.selectedCategory)||(this.selectedCategory === 0)) {this.#addToGallery(works[i])}
         }
     }
 
-    async displayFilteredGallery(selectedCategory){
-
+    async displayFilteredGallery(selectedCategory = 0)
+    {
         await fetch(`${api}works`).then((response)=>{
             return response.json()
         }).then((data) => {
@@ -138,15 +142,9 @@ class Gallery {
 
 }
 
-/*function emptyGallery()
-{
-    galleryContainer.innerHTML=""
-}
 
-function emptyFilters()
-{
-    filtersContainer.innerHTML=""
-}*/
+
+
 
 function isTokenAlive()
 {
@@ -234,42 +232,6 @@ async function populateModaleGallery()
     })
 }
 
-// !!! deal with errors
-async function populateFiltersnGallery(selectedCategoryId)
-{
-    await fetch(`${api}works`).then((response)=>{
-        //console.log(response.ok)
-        return response.json()
-    }).then((data) => {
-
-        // check if response 200 or 500 ?
-        let categories = []
-        let pushedIds = []
-
-        /*gallery.clear("gallery")
-        gallery.clear("filters")*/
-
-        gallery.updateGallery(data, selectedCategoryId)
-    
-        for(let i=0; i<Object.keys(data).length; i++)
-        {   
-            // try get same result with set
-            // push a category {id, name} only if the current id hasn't been pushed yet
-            if(pushedIds.includes(data[i].category.id) === false)
-            {
-                categories.push(data[i].category)
-                pushedIds.push(data[i].category.id)
-            }
-        }
-    
-        gallery.updateFilters(categories, selectedCategoryId)
-
-    }).catch(error => {
-        //console.error('There was an error!', error);
-        //implement can't load gallery in the gallery div
-    })
-}
-
 async function log(login, password)
 {
 
@@ -344,8 +306,7 @@ function closeModale(){
 
 function onloadIndex(){
     gallery = new Gallery(".gallery",".filters")
-    gallery.displayFilteredGallery(0) // 0 = nofilter
+    gallery.displayFilteredGallery() // 0 = nofilter
     isTokenAlive() ? showEditButtonsonIndex() : false
 }
 
-let gallery
