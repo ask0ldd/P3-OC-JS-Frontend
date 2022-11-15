@@ -1,7 +1,7 @@
 const api = 'http://localhost:5678/api/'
 
-const galleryContainer = document.querySelector(".gallery")
-const filtersContainer = document.querySelector(".filters")
+/*const galleryContainer = document.querySelector(".gallery")
+const filtersContainer = document.querySelector(".filters")*/
 const loginButton = document.querySelector("nav > ul > li:nth-child(3)")
 const contactButton = document.querySelector("nav > ul > li:nth-child(2)")
 const editIcon = document.querySelectorAll(".edit__icon")
@@ -58,7 +58,11 @@ class Gallery {
         }
     }
 
-    // ADD A FILTER TO THE DOM
+    removeFiltersDuplicates(){
+
+    }
+
+    // INSERT A FILTER TO THE DOM
     addFilter(filterName, filterId)
     {
         //remplacer divs par buttons
@@ -73,7 +77,7 @@ class Gallery {
         this.filtersContainer.append(button)
     }
 
-    // ADD AN ARRAY OF FILTERS TO THE DOM
+    // INSERT ALL FILTERS WITHOUT DUPLICATES TO THE DOM / MARK THE ACTIVE ONE
     updateFilters(categories, selectedCategory)
     {
         this.setSelectedCategory(selectedCategory)
@@ -82,7 +86,7 @@ class Gallery {
         categories.forEach(element => this.addFilter(element.name, element.id))
     }
 
-    // ADD A PICTURE TO THE DOM
+    // INSERT A PICTURE TO THE DOM
     addToGallery(work)
     {
         let figure = document.createElement("figure")
@@ -90,14 +94,46 @@ class Gallery {
         this.galleryContainer.append(figure) // verifier que gallery container exists
     }
 
-    // ADD FILTERED FICTURES TO THE DOM
+    // INSERT A GROUP OF SELECTED FICTURES TO THE DOM
     updateGallery(works, selectedCategory)
     {
         this.setSelectedCategory(selectedCategory)
+        this.clear("gallery")
         for(let i=0; i<Object.keys(works).length; i++){
             // add to gallery works with id === selectedCategoryId or all works if selectedCategoryId === 0
             if((works[i].category.id === this.selectedCategory)||(this.selectedCategory === 0)) {this.addToGallery(works[i])}
         }
+    }
+
+    async displayFilteredGallery(selectedCategory){
+
+        await fetch(`${api}works`).then((response)=>{
+            return response.json()
+        }).then((data) => {
+
+            // check if response 200 or 500 ?
+            let categories = []
+            let pushedIds = []
+    
+            this.updateGallery(data, selectedCategory)
+        
+            for(let i=0; i<Object.keys(data).length; i++)
+            {   
+                // try get same result with set
+                // push a category {id, name} only if the current id hasn't been pushed yet
+                if(pushedIds.includes(data[i].category.id) === false)
+                {
+                    categories.push(data[i].category)
+                    pushedIds.push(data[i].category.id)
+                }
+            }
+        
+            this.updateFilters(categories, selectedCategory)
+    
+        }).catch(error => {
+            //console.error('There was an error!', error);
+            //implement can't load gallery in the gallery div
+        })
     }
 
 }
@@ -210,8 +246,8 @@ async function populateFiltersnGallery(selectedCategoryId)
         let categories = []
         let pushedIds = []
 
-        gallery.clear("gallery")
-        gallery.clear("filters")
+        /*gallery.clear("gallery")
+        gallery.clear("filters")*/
 
         gallery.updateGallery(data, selectedCategoryId)
     
@@ -308,7 +344,7 @@ function closeModale(){
 
 function onloadIndex(){
     gallery = new Gallery(".gallery",".filters")
-    populateFiltersnGallery(0)
+    gallery.displayFilteredGallery(0) // 0 = nofilter
     isTokenAlive() ? showEditButtonsonIndex() : false
 }
 
