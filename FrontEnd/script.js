@@ -1,19 +1,16 @@
 const api = 'http://localhost:5678/api/'
 
-/*const galleryContainer = document.querySelector(".gallery")
-const filtersContainer = document.querySelector(".filters")*/
 const loginButton = document.querySelector("nav > ul > li:nth-child(3)")
 const contactButton = document.querySelector("nav > ul > li:nth-child(2)")
 const editIcon = document.querySelectorAll(".edit__icon")
 const editTopBar = document.querySelector(".editionmode__topbar")
 const header = document.querySelector("#header")
-//const opaqueContainer = document.querySelector("#opaque__container")
 const editGallery = document.querySelector("#edition__gallery")
 
 let gallery
 let modale
 
-// delete final upload
+// !!! delete before final upload
 const user = {'email':'sophie.bluel@test.tld','password':'S0phie'}
 const unauthorizedUser = {'email':'ezaeaz.ezaeza@test.tld','password':'ezaeza'}
 
@@ -43,7 +40,7 @@ class Gallery {
             case "gallery":
                 while (this.galleryContainer.lastElementChild) 
                 {
-                    this.galleryContainer.removeChild(this.galleryContainer.lastElementChild); // No innerHTML="" to kill all addeventlistener attached to the childs
+                    this.galleryContainer.removeChild(this.galleryContainer.lastElementChild); // No innerHTML = "" to kill all addeventlistener attached to those childs
                 }
             break;
             case "filters":
@@ -64,8 +61,8 @@ class Gallery {
         }
     }
 
-    // *** GET RID OF DUPLICATES
-    #SetCategories_withNoDuplicates(data){
+    // *** GET RID OF DUPLICATES (DOUBLONS)
+    #setCategories_withNoDuplicates(data){
         let pushedIds = []
         this.categories = []
 
@@ -79,10 +76,10 @@ class Gallery {
         }
     }
 
-    // *** INSERT A FILTER TO THE DOM
+    // *** INSERT A FILTER INTO THE DOM
     #addFilter(filterName, filterId)
     {
-        //remplacer divs par buttons
+        // should replace divs w/ button
         let button = document.createElement("div")
         button.textContent = filterName
         button.addEventListener("click", () => 
@@ -94,16 +91,17 @@ class Gallery {
         this.filtersContainer.append(button)
     }
 
-    // *** INSERT ALL FILTERS WITHOUT DUPLICATES TO THE DOM / MARK THE ACTIVE ONE
-    updateFilters(categories, selectedCategory = 0)
+    // *** INSERT ALL FILTERS WITHOUT DUPLICATES INTO THE FILTERSBAR
+    updateFilters(data, selectedCategory = 0)
     {
         this.#setSelectedCategory(selectedCategory)
+        this.#setCategories_withNoDuplicates(data)
         this.clear("filters")
         this.#addFilter("Tous", 0)
-        categories.forEach(element => this.#addFilter(element.name, element.id))
+        this.categories.forEach(element => this.#addFilter(element.name, element.id))
     }
 
-    // *** INSERT A PICTURE TO THE DOM
+    // *** INSERT A PICTURE + TITLE INTO THE DOM
     #addToGallery(work)
     {
         let figure = document.createElement("figure")
@@ -111,7 +109,7 @@ class Gallery {
         this.galleryContainer.append(figure)
     }
 
-    // *** INSERT A GROUP OF SELECTED FICTURES TO THE DOM
+    // *** INSERT A GROUP OF SELECTED WORKS INTO THE GALLERY
     updateGallery(works, selectedCategory = 0)
     {
         this.#setSelectedCategory(selectedCategory)
@@ -130,14 +128,13 @@ class Gallery {
 
         }).then((data) => {
 
-            // check if response 200 or 500 ?
+            // check response 200 or 500 ?
     
             this.updateGallery(data, selectedCategory)
-            this.#SetCategories_withNoDuplicates(data)
-            this.updateFilters(this.categories, selectedCategory)
+            this.updateFilters(data, selectedCategory)
     
         }).catch(error => {
-            //console.error('There was an error!', error);
+            // console.error('There was an error!', error);
         })
     }
 
@@ -166,7 +163,7 @@ class Modale {
         this.#scrollLock(false)
     }
 
-    switchToModale(modaleBody)
+    switchToBody(modaleBody = "editGallery")
     {
 
     }
@@ -195,10 +192,13 @@ class Modale {
 
 function isTokenAlive()
 {
-    //gerer si pas de cookie ou cookie pas string
+    // deal w/ errors : no cookie or no string type
     const cookie = document.cookie
     return cookie.search("token")===-1 ? false : true
 }
+
+
+// Functions to rework
 
 function extractWorks(obj)
 {
@@ -214,7 +214,6 @@ function extractWorks(obj)
             })
     }
 
-    //console.log(works)
     return works
 
 }
@@ -242,12 +241,9 @@ async function populateModaleGallery()
         return response.json()
     }).then((data) => {
 
-        // reset gallery
         editGallery.innerHTML=""
 
-        // get works as an array of objects of data
         const works = extractWorks(data)
-
 
         works.forEach(work => 
         {
@@ -283,7 +279,7 @@ async function log(login, password)
 
 }
 
-function showEditButtonsonIndex(){
+function adminMode(){
     editIcon.forEach(el => 
         {
             el.classList.toggle('edit__icon--on')
@@ -295,8 +291,6 @@ function showEditButtonsonIndex(){
 
 function tryLog ()
 {
-    //$event.preventDefault()
-    //console.log('trying to log sir')
     log(email, password).then((userDatas) => 
     {
         //if(user === undefined){}
@@ -306,10 +300,16 @@ function tryLog ()
     })
 }
 
+
+
+/***
+ * MAIN****
+ ***/
+
 function onloadIndex(){
     gallery = new Gallery(".gallery",".filters")
     modale = new Modale("#opaque__container")
     gallery.displayGallery_filtered() // 0 = nofilter
-    isTokenAlive() ? showEditButtonsonIndex() : false
+    isTokenAlive() ? adminMode() : false
 }
 
