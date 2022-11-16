@@ -14,6 +14,7 @@ let modale
 const user = {'email':'sophie.bluel@test.tld','password':'S0phie'}
 const unauthorizedUser = {'email':'ezaeaz.ezaeza@test.tld','password':'ezaeza'}
 
+// tests to implement : wrong endpoint, wrong ip, non existent work id, no work at all, selectedcategory non existent, empty gallery on server
 
 class Gallery {
 
@@ -91,7 +92,7 @@ class Gallery {
         this.filtersContainer.append(button)
     }
 
-    // *** INSERT ALL FILTERS WITHOUT DUPLICATES INTO THE FILTERSBAR
+    // *** INSERT ALL FILTER BUTTONS WITHOUT DUPLICATES INTO THE DOM / MARK THE SELECTED ONE
     updateFilters(data, selectedCategory = 0)
     {
         this.#setSelectedCategory(selectedCategory)
@@ -99,6 +100,17 @@ class Gallery {
         this.clear("filters")
         this.#addFilter("Tous", 0)
         this.categories.forEach(element => this.#addFilter(element.name, element.id))
+    }
+
+    // *** ERROR TO GALLERY
+    #displayError(error){
+        this.clear()
+        let p = document.createElement("p")
+        let blankCell = document.createElement("p")
+        p.classList.add("gallery__errormsg")
+        p.innerHTML = `${error}<br><br>` || "Network Error. Can't display Gallery."
+        this.galleryContainer.append(blankCell)
+        this.galleryContainer.append(p)
     }
 
     // *** INSERT A PICTURE + TITLE INTO THE DOM
@@ -124,20 +136,22 @@ class Gallery {
     {
         await fetch(`${api}works`).then((response)=>{
 
+            if(!response.ok || response.status!==200)
+            {
+                throw Error("Failed to retrieve datas.")
+            }
             return response.json()
 
         }).then((data) => {
-
-            // check response 200 or 500 ?
     
             this.updateGallery(data, selectedCategory)
             this.updateFilters(data, selectedCategory)
     
         }).catch(error => {
-            // console.error('There was an error!', error);
+            //console.error('There was an error!', error)
+            this.#displayError(error)
         })
     }
-
 }
 
 class Modale {
@@ -299,6 +313,8 @@ function tryLog ()
         window.location.href = "index.html"
     })
 }
+
+function postWorkTest(image, title, url){}
 
 
 

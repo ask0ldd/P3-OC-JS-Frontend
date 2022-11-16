@@ -237,6 +237,12 @@ li:hover {
   grid-row-gap: 20px;
 }
 
+.gallery__errormsg {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 800;
+}
+
 .gallery img {
   width: 100%;
 }
