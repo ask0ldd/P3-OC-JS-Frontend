@@ -77,7 +77,7 @@ class Gallery {
         }
     }
 
-    // *** GET RID OF DUPLICATES (DOUBLONS)
+    // *** GET RID OF DUPLICATES & STORE > this.categories (DOUBLONS)
     #setCategories_withNoDuplicates(data){
         let pushedIds = []
         this.categories = []
@@ -92,7 +92,7 @@ class Gallery {
         }
     }
 
-    // *** INSERT A FILTER INTO THE DOM
+    // *** INSERT A FILTER > DOM
     #addFilter(filterName, filterId)
     {
         // should replace divs w/ button
@@ -107,7 +107,7 @@ class Gallery {
         this.filtersContainer.append(button)
     }
 
-    // *** INSERT ALL FILTER BUTTONS WITHOUT DUPLICATES INTO THE DOM / MARK THE SELECTED ONE
+    // *** INSERT ALL FILTER BUTTONS WITHOUT DUPLICATES > DOM / MARK THE SELECTED ONE
     updateFilters(data, selectedCategory = 0)
     {
         this.#setSelectedCategory(selectedCategory)
@@ -117,7 +117,7 @@ class Gallery {
         this.categories.forEach(element => this.#addFilter(element.name, element.id))
     }
 
-    // *** ERROR TO GALLERY
+    // *** ERROR > GALLERY
     #displayFetchGalleryError(error){
         this.clear()
         let p = document.createElement("p")
@@ -128,7 +128,7 @@ class Gallery {
         this.galleryContainer.append(p)
     }
 
-    // *** INSERT A PICTURE + TITLE INTO THE DOM
+    // *** INSERT A PICTURE + TITLE > DOM
     #addToGallery(work)
     {
         let figure = document.createElement("figure")
@@ -136,7 +136,7 @@ class Gallery {
         this.galleryContainer.append(figure)
     }
 
-    // *** INSERT A GROUP OF SELECTED WORKS INTO THE GALLERY
+    // *** INSERT A GROUP OF SELECTED WORKS > GALLERY
     updateGallery(works, selectedCategory = 0)
     {
         this.#setSelectedCategory(selectedCategory)
@@ -187,6 +187,12 @@ class Modale {
         this.TitleNode_DOM
         this.currentModale = "editGallery"
         this.modaleBodyList = {"editGallery" : "div1", "UploadWork" : "div2", "workUploaded" : "div3"}
+        this.ModaleNode_DOM.addEventListener('click', () => this.close())
+        /*document.querySelector("#modale__container").click((e) =>
+        {
+            e.preventDefault();
+            e.stopPropagation();
+        })*/
     }
 
     open(modaleBody = "editGallery")
@@ -282,6 +288,11 @@ class Auth {
             })
         editTopBar.classList.toggle('editionmode__topbar--on')
         header.classList.toggle('header__padding--notopBar')
+        // login => hi sophie
+    }
+
+    static visitorMode(){
+        // login button back
     }
 }
 
@@ -344,7 +355,9 @@ async function populateModaleGallery()
     })
 }
 
-function postWorkTest(image, title, url){}
+function postWorkTest(image, title, url){
+    
+}
 
 
 
