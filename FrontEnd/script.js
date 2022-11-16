@@ -2,7 +2,7 @@ const api = 'http://localhost:5678/api/'
 
 const loginButton = document.querySelector("nav > ul > li:nth-child(3)")
 const contactButton = document.querySelector("nav > ul > li:nth-child(2)")
-const editIcon = document.querySelectorAll(".edit__icon")
+const editIcons = document.querySelectorAll(".edit__icon")
 const editTopBar = document.querySelector(".editionmode__topbar")
 const header = document.querySelector("#header")
 const editGallery = document.querySelector("#edition__gallery")
@@ -14,7 +14,18 @@ let modale
 const user = {'email':'sophie.bluel@test.tld','password':'S0phie'}
 const unauthorizedUser = {'email':'ezaeaz.ezaeza@test.tld','password':'ezaeza'}
 
-// tests to implement : wrong endpoint, wrong ip, non existent work id, no work at all, selectedcategory non existent, empty gallery on server
+/* tests to implement : wrong endpoint, wrong ip, non existent work id, no work at all, selectedcategory non existent, empty gallery on server, empty categories
+
+*/
+
+
+
+//--------------
+/*
+GALLERY : Handle the Gallery on the index page
+*/
+//--------------
+
 
 class Gallery {
 
@@ -27,6 +38,10 @@ class Gallery {
         this.filtersContainer = document.querySelector(filtersSelector)
         this.#categories = []
         this.#selectedCategory = 0;
+    }
+
+    getCategories(){
+        return this.categories.length !== 0 ? this.categories : false
     }
 
     #setSelectedCategory(selectedCategory = 0)
@@ -103,7 +118,7 @@ class Gallery {
     }
 
     // *** ERROR TO GALLERY
-    #displayError(error){
+    #displayFetchGalleryError(error){
         this.clear()
         let p = document.createElement("p")
         let blankCell = document.createElement("p")
@@ -149,10 +164,20 @@ class Gallery {
     
         }).catch(error => {
             //console.error('There was an error!', error)
-            this.#displayError(error)
+            this.#displayFetchGalleryError(error)
         })
     }
 }
+
+
+
+
+//--------------
+/*
+MODALE : Handle the Modale & toggle between the two UI
+*/
+//--------------
+
 
 class Modale {
 
@@ -169,6 +194,7 @@ class Modale {
         this.#scrollLock(true)
         this.ModaleNode_DOM.style.display="flex"
         //populateModaleGallery()
+        this.toggleBodies()
     }
 
     close()
@@ -177,9 +203,10 @@ class Modale {
         this.#scrollLock(false)
     }
 
-    switchToBody(modaleBody = "editGallery")
+    toggleBodies(modaleBody = "editGallery")
     {
-
+        // temporary
+        populateModaleGallery()
     }
 
     #setTitle(title)
@@ -193,8 +220,8 @@ class Modale {
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop
             let scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
             window.onscroll = () => {
-                window.scrollTo(scrollLeft, scrollTop);
-            };
+                window.scrollTo(scrollLeft, scrollTop)
+            }
         }else{
             window.onscroll = () => {}
         }
@@ -204,11 +231,58 @@ class Modale {
 
 
 
-function isTokenAlive()
-{
-    // deal w/ errors : no cookie or no string type
-    const cookie = document.cookie
-    return cookie.search("token")===-1 ? false : true
+
+//--------------
+/*
+AUTH : Methods related to the auth process
+*/
+//--------------
+
+
+class Auth {
+
+    static isTokenAlive()
+    {
+        // deal w/ errors : no cookie or no string type
+        const cookie = document.cookie
+        return cookie.search("token")===-1 ? false : true
+    }
+
+    static async LogInAttempt()
+    {
+        let logs = {"email": user.email, "password": user.password}
+
+        await fetch(`${api}users/login`, 
+        {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify(logs)        
+        }).then((response) => {
+            return response.json()
+        }).then((userDatas)=>{
+            document.cookie = `id=${userDatas.userId}; Secure`
+            document.cookie = `token=${userDatas.token}; Secure`
+            window.location.href = "index.html"
+        })
+
+        console.log("tried to log")
+    }
+
+    static adminMode(){
+        editIcons.forEach(el => 
+            {
+                el.classList.toggle('edit__icon--on')
+            })
+        editTopBar.classList.toggle('editionmode__topbar--on')
+        header.classList.toggle('header__padding--notopBar')
+    }
 }
 
 
@@ -270,50 +344,6 @@ async function populateModaleGallery()
     })
 }
 
-async function log(login, password)
-{
-
-    let logs = {"email": user.email, "password": user.password}
-
-    let response = await fetch(`${api}users/login`, 
-    {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify(logs)        
-    })
-    //console.log(response.ok)
-    return await response.json()
-
-}
-
-function adminMode(){
-    editIcon.forEach(el => 
-        {
-            el.classList.toggle('edit__icon--on')
-            //el.addEventListener('click', populateModaleGallery())
-        })
-    editTopBar.classList.toggle('editionmode__topbar--on')
-    header.classList.toggle('header__padding--notopBar')
-}
-
-function tryLog ()
-{
-    log(email, password).then((userDatas) => 
-    {
-        //if(user === undefined){}
-        document.cookie = `id=${userDatas.userId}; Secure`;
-        document.cookie = `token=${userDatas.token}; Secure`;
-        window.location.href = "index.html"
-    })
-}
-
 function postWorkTest(image, title, url){}
 
 
@@ -326,6 +356,6 @@ function onloadIndex(){
     gallery = new Gallery(".gallery",".filters")
     modale = new Modale("#opaque__container")
     gallery.displayGallery_filtered() // 0 = nofilter
-    isTokenAlive() ? adminMode() : false
+    Auth.isTokenAlive() ? Auth.adminMode() : false // replace login par hi sophie
 }
 
