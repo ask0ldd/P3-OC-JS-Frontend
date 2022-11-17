@@ -19,7 +19,16 @@ const unauthorizedUser = {'email':'ezaeaz.ezaeza@test.tld','password':'ezaeza'}
 */
 
 class APIWrapper {
-    static getCategories(){
+    static async getCategories(){
+        try{
+            let works = (await fetch(`${api}categories`)).json()
+            return works
+        }
+
+        catch(e){
+            console.log(e)
+            return "error"
+        }
     }
 
     // *** Extract Categories out of works & get rid of any duplicate
@@ -27,7 +36,10 @@ class APIWrapper {
         let pushedIds = []
         let categories = []
 
+        //console.log(works)
+
         // check the nature of works, if works is missing or has the wrong format/type
+        // test work ? 
         for(let i=0; i<Object.keys(works).length; i++)
         {   
             if(pushedIds.includes(works[i].category.id) === false)
@@ -38,12 +50,21 @@ class APIWrapper {
         }
 
         return categories
+
+        /*let set = new Set()
+        for(let i=0; i<Object.keys(works).length; i++)
+        {
+            set.add(works[i].category.name)
+        }
+        console.log(set)
+        return set*/
     }
 
     static async getWorks(){
         try{
+            // tester 200
             let works = (await fetch(`${api}works`)).json()
-            //console.log(works)
+            //console.log(await works)
             return works
         }
 
@@ -92,10 +113,6 @@ class Gallery {
         this.#selectedCategory = 0
     }
 
-    /*getCategories(){
-        return this.categories.length !== 0 ? this.categories : false // handle false response
-    }*/
-
     // *** REMOVE GALLERY AND/OR FILTERS OUT OF THE DOM
     clear(container)
     {
@@ -140,12 +157,14 @@ class Gallery {
     }
 
     // *** INSERT ALL FILTER BUTTONS WITHOUT DUPLICATES > DOM / MARK THE SELECTED ONE
-    updateFilters(data, selectedCategory = 0)
+    updateFilters(works, selectedCategory = 0)
     {
         this.selectedCategory = selectedCategory
         this.clear("filters")
         this.#addFilter("Tous", 0)
-        APIWrapper.parseCategories(data).forEach(element => this.#addFilter(element.name, element.id))
+        APIWrapper.parseCategories(works).forEach(el => this.#addFilter(el.name, el.id))
+        /*const cat = await APIWrapper.getCategories()
+        cat.forEach(el => this.#addFilter(el.name, el.id))*/
     }
 
     // *** ERROR > GALLERY
@@ -223,7 +242,7 @@ class Modale {
     {
         this.#scrollLock(true)
         this.ModaleNode_DOM.style.display="flex"
-        populateModaleGallery()
+        this.updateEditGallery()
         this.toggleBodies()
     }
 
@@ -239,9 +258,26 @@ class Modale {
         //populateModaleGallery()
     }
 
-    #setTitle(title)
+    #addThumbnail(work){
+        let div = document.createElement("div")
+        div.style.position="relative"
+        div.innerHTML=`
+        <div style="display:flex; flex-direction:column;">
+        <img class="thumb" src="${work.imageUrl}" crossorigin="anonymous">
+        <a href="#" style="font-size:12px; margin-top:4px;">éditer</a>
+        <img class="bin__icon" src="./assets/icons/bin_icon.png" onclick="deleteWork(${work.id})">
+        `
+        editGallery.append(div)
+    }
+
+    async updateEditGallery()
     {
-        this.TitleNode_DOM = title
+        const works = await APIWrapper.getWorks()
+        console.log(works)
+
+        for(let i=0; i<Object.keys(works).length; i++){
+            this.#addThumbnail(works[i])
+        }
     }
 
     #scrollLock(bool){
@@ -255,10 +291,6 @@ class Modale {
         }else{
             window.onscroll = () => {}
         }
-    }
-
-    editGallery(){
-
     }
     
 }
@@ -327,60 +359,8 @@ class Auth {
 
 // Functions to rework
 
-function extractWorks(obj)
-{
-    let works = []
-
-    for(let i=0; i<Object.keys(obj).length; i++)
-    {
-        works.push({
-            'id' : obj[i].id, 
-            'title' : obj[i].title, 
-            'url' : obj[i].imageUrl, 
-            'category' : obj[i].categoryId
-            })
-    }
-
-    return works
-
-}
-
 function deleteWork(workId){
     console.log("work deleted : ", workId)
-}
-
-function getModaleThumbnail(work){
-
-    let div = document.createElement("div")
-    div.style.position="relative"
-    div.innerHTML=`
-    <div style="display:flex; flex-direction:column;">
-    <img class="thumb" src="${work.url}" crossorigin="anonymous">
-    <a href="#" style="font-size:12px; margin-top:4px;">éditer</a>
-    <img class="bin__icon" src="./assets/icons/bin_icon.png" onclick="deleteWork(${work.id})">
-    `
-    return div
-}
-
-function populateModaleGallery()
-{
-    fetch(`${api}works`).then((response)=>{
-        return response.json()
-    }).then((data) => {
-
-        editGallery.innerHTML=""
-
-        const works = extractWorks(data)
-
-        works.forEach(work => 
-        {
-            let thumb = getModaleThumbnail(work)
-            editGallery.append(thumb)
-        })
-
-    }).catch(error => {
-        console.log(error)
-    })
 }
 
 function postWorkTest(image, title, url){
