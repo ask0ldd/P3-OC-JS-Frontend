@@ -111,38 +111,40 @@
 	</nav>
 </footer>
 
+<!-- Modale -->
 <aside id="opaque__container">
-	<!--<div onclick="closeModale">x</div>-->
 	<div id="modale__container">
 		<div id="modale__backnClose">
 			<span>x-</span><span style="cursor: pointer;" onclick="modale.close()">x</span>
 		</div>
-		<div class="modale__body">
+
+		<!-- editGallery -->
+		<div class="modale__body" id="body__edit"><!-- modale__body -->
 			<span class="modale__title">Gallerie Photo</span> <!-- hx -->
-			<div id="edition__gallery"></div> <!-- modale__body -->
+			<div id="edition__gallery"></div>
 			<hr class="modale__hr">
 			<input class="modale__button" type="button" value="Ajouter une photo">
 			<p>supprimer la gallerie</p>
 		</div>
-		<div class="modale__body">
+
+		<!-- upload -->
+		<div class="modale__body" id="body__upload">
 			<span class="modale__title">Ajout Photo</span> <!-- hx -->
 			<div id="addpic__container">
 				<img src="./assets/icons/picture-placeholder.png">
 				<input class="modale__button grey__bg--greentxt" type="button" value="+ Ajouter photo">
+				<!--<label for="worktoupload">jpg, png : 4mo max</label>-->
+				<input type="file" id="worktoupload" name="worktoupload" accept="image/png, image/jpeg">
 			</div>
 			<label for="title">Titre</label>
 			<input type="text" name="title" id="title">
 			<label for="category">Catégorie</label>
-			<!--<input type="text" name="category" id="category">-->
-			<select name="category" id="category">
-				<option value="volvo">Volvo</option>
-				<option value="saab">Saab</option>
-				<option value="mercedes">Mercedes</option>
-				<option value="audi">Audi</option>
+			<select name="categories" id="categories">
 			</select>
 			<hr class="modale__hr">
 			<input class="modale__button grey__bg--whitetxt" type="button" value="Valider">
 		</div>
+
 	</div>
 </aside>
 </body>

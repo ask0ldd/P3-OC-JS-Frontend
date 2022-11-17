@@ -5,7 +5,7 @@ const contactButton = document.querySelector("nav > ul > li:nth-child(2)")
 const editIcons = document.querySelectorAll(".edit__icon")
 const editTopBar = document.querySelector(".editionmode__topbar")
 const header = document.querySelector("#header")
-const editGallery = document.querySelector("#edition__gallery")
+
 
 let gallery
 let modale
@@ -36,18 +36,15 @@ class APIWrapper {
         let pushedIds = []
         let categories = []
 
-        //console.log(works)
-
         // check the nature of works, if works is missing or has the wrong format/type
         // test work ? 
-        for(let i=0; i<Object.keys(works).length; i++)
-        {   
-            if(pushedIds.includes(works[i].category.id) === false)
+        works.forEach( el => {
+            if(pushedIds.includes(el.category.id) === false)
             {
-                categories.push(works[i].category)
-                pushedIds.push(works[i].category.id)
+                categories.push(el.category)
+                pushedIds.push(el.category.id)
             }
-        }
+        })
 
         return categories
 
@@ -74,7 +71,8 @@ class APIWrapper {
         }
     }
 
-    static async getWorks_nCategories(){
+    static async getWorks_nCategories()
+    {
         try{
             let works = (await fetch(`${api}works`)).json()
             let categories = parseCategories (works)
@@ -90,17 +88,24 @@ class APIWrapper {
     static async sendWork(){
         // check token before anything
     }
+
+    deleteWork(workId)
+    {
+        console.log("work deleted : ", workId)
+    }
 }
 
 
-//--------------
-/*
-GALLERY : Handle the Gallery on the index page
-*/
-//--------------
+/****/
 
 
 class Gallery {
+
+    //--------------
+    /*
+    GALLERY : Handle the Gallery on the index page
+    */
+    //--------------
 
     #selectedCategory
     #categories
@@ -163,8 +168,6 @@ class Gallery {
         this.clear("filters")
         this.#addFilter("Tous", 0)
         APIWrapper.parseCategories(works).forEach(el => this.#addFilter(el.name, el.id))
-        /*const cat = await APIWrapper.getCategories()
-        cat.forEach(el => this.#addFilter(el.name, el.id))*/
     }
 
     // *** ERROR > GALLERY
@@ -191,10 +194,11 @@ class Gallery {
     {
         this.selectedCategory = selectedCategory
         this.clear("gallery")
-        for(let i=0; i<Object.keys(works).length; i++){
-            // filtering works / 0 = no filter
-            if((works[i].category.id === this.selectedCategory)||(this.selectedCategory === 0)) {this.#addToGallery(works[i])}
-        }
+
+        // filtering works / 0 = no filter
+        works.forEach( el => {
+            if((el.category.id === this.selectedCategory)||(this.selectedCategory === 0)) {this.#addToGallery(el)}
+        })
     }
 
     async displayGallery_filtered(selectedCategory = 0)
@@ -213,23 +217,26 @@ class Gallery {
 }
 
 
-
-
-//--------------
-/*
-MODALE : Handle the Modale & toggle between the two UI
-*/
-//--------------
+/****/
 
 
 class Modale {
 
+    //--------------
+    /*
+    MODALE : Handle the Modale & toggle between the two UI
+    */
+    //--------------
+
     constructor(modaleNode) 
     {
         this.ModaleNode_DOM = document.querySelector(modaleNode)
-        this.TitleNode_DOM
-        this.currentModale = "editGallery"
-        this.modaleBodyList = {"editGallery" : "div1", "UploadWork" : "div2", "workUploaded" : "div3"}
+        this.currentBody = "editGallery"
+        //this.modaleBodyList = {"editGallery" : "div1", "uploadWork" : "div2"}
+        this.editGallery = document.querySelector("#edition__gallery")
+        this.editBody = document.querySelector("#body__edit")
+        this.uploadBody = document.querySelector("#body__upload")
+        this.dropdownCategories = document.querySelector("#categories")
         //this.ModaleNode_DOM.addEventListener('click', () => this.close())
         /*document.querySelector("#modale__container").click((e) =>
         {
@@ -244,6 +251,8 @@ class Modale {
         this.ModaleNode_DOM.style.display="flex"
         this.updateEditGallery()
         this.toggleBodies()
+        // better to call when toggling
+        this.updateDropdownCategories()
     }
 
     close()
@@ -258,29 +267,62 @@ class Modale {
         //populateModaleGallery()
     }
 
-    #addThumbnail(work){
-        let div = document.createElement("div")
-        div.style.position="relative"
-        div.innerHTML=`
+    #addThumbnail(work)
+    {
+        const div = document.createElement("div")
+
+        div.style.position = "relative"
+        div.innerHTML = `
         <div style="display:flex; flex-direction:column;">
         <img class="thumb" src="${work.imageUrl}" crossorigin="anonymous">
         <a href="#" style="font-size:12px; margin-top:4px;">éditer</a>
-        <img class="bin__icon" src="./assets/icons/bin_icon.png" onclick="deleteWork(${work.id})">
-        `
-        editGallery.append(div)
+        <img class="bin__icon" src="./assets/icons/bin_icon.png" onclick="deleteWork(${work.id})">`
+        this.editGallery.append(div)
+    }
+
+    #clearEditGallery()
+    {
+        while (this.editGallery.lastElementChild) 
+        {
+            this.editGallery.removeChild(this.editGallery.lastElementChild)
+        }
     }
 
     async updateEditGallery()
     {
         const works = await APIWrapper.getWorks()
-        console.log(works)
 
-        for(let i=0; i<Object.keys(works).length; i++){
-            this.#addThumbnail(works[i])
+        this.#clearEditGallery()
+        works.forEach( el => this.#addThumbnail(el))
+    }
+
+    #clearDropdown(){
+        while (this.dropdownCategories.lastElementChild) 
+        {
+            this.dropdownCategories.removeChild(this.dropdownCategories.lastElementChild)
         }
     }
 
-    #scrollLock(bool){
+    #checkWork(){
+        //check size among others
+    }
+
+    async updateDropdownCategories()
+    {
+        const categories = await APIWrapper.getCategories()
+
+        this.#clearDropdown()
+        categories.forEach( el => 
+        {
+            let option = document.createElement("option")
+            option.value = el.name
+            option.textContent = el.name
+            this.dropdownCategories.append(option)
+        })
+    }
+
+    #scrollLock(bool = false)
+    {
         if(bool)
         {
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop
@@ -296,16 +338,16 @@ class Modale {
 }
 
 
-
-
-//--------------
-/*
-AUTH : Methods related to the auth process
-*/
-//--------------
+/****/
 
 
 class Auth {
+
+    //--------------
+    /*
+    AUTH : Helper related to the auth processes
+    */
+    //--------------
 
     static isTokenAlive()
     {
@@ -357,15 +399,6 @@ class Auth {
 }
 
 
-// Functions to rework
-
-function deleteWork(workId){
-    console.log("work deleted : ", workId)
-}
-
-function postWorkTest(image, title, url){
-    
-}
 
 
 
