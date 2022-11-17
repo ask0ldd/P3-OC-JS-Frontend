@@ -22,10 +22,12 @@ class APIWrapper {
     static getCategories(){
     }
 
+    // *** Extract Categories out of works & get rid of any duplicate
     static parseCategories(works){
         let pushedIds = []
         let categories = []
 
+        // check the nature of works, if works is missing or has the wrong format/type
         for(let i=0; i<Object.keys(works).length; i++)
         {   
             if(pushedIds.includes(works[i].category.id) === false)
@@ -34,16 +36,20 @@ class APIWrapper {
                 pushedIds.push(works[i].category.id)
             }
         }
+
         return categories
     }
 
     static async getWorks(){
         try{
             let works = (await fetch(`${api}works`)).json()
+            //console.log(works)
             return works
         }
+
         catch(e){
             console.log(e)
+            return "error"
         }
     }
 
@@ -53,8 +59,10 @@ class APIWrapper {
             let categories = parseCategories (works)
             return [works, categories]
         }
+
         catch(e){
             console.log(e)
+            return "error"
         }
     }
 }
@@ -118,7 +126,7 @@ class Gallery {
     }
 
     // *** GET RID OF DUPLICATES & STORE > this.categories (DOUBLONS)
-    #setCategories_withNoDuplicates(data){
+    /*#setCategories_withNoDuplicates(data){
         let pushedIds = []
         this.categories = []
 
@@ -132,7 +140,7 @@ class Gallery {
         }
 
         return this.categories
-    }
+    }*/
 
     // *** INSERT A FILTER > DOM
     #addFilter(filterName, filterId)
@@ -153,10 +161,11 @@ class Gallery {
     updateFilters(data, selectedCategory = 0)
     {
         this.#setSelectedCategory(selectedCategory)
-        this.#setCategories_withNoDuplicates(data)
+        //this.#setCategories_withNoDuplicates(data)
         this.clear("filters")
         this.#addFilter("Tous", 0)
-        this.categories.forEach(element => this.#addFilter(element.name, element.id))
+        //this.categories.forEach(element => this.#addFilter(element.name, element.id))
+        APIWrapper.parseCategories(data).forEach(element => this.#addFilter(element.name, element.id))
     }
 
     // *** ERROR > GALLERY
@@ -189,25 +198,14 @@ class Gallery {
         }
     }
 
-    displayGallery_filtered(selectedCategory = 0)
+    async displayGallery_filtered(selectedCategory = 0)
     {
-        fetch(`${api}works`).then((response)=>{
-
-            if(!response.ok || response.status!==200)
-            {
-                throw Error("Failed to retrieve datas.")
-            }
-            return response.json()
-
-        }).then((data) => {
-    
+        let data = await APIWrapper.getWorks()
+        if(data !== "error")
+        {
             this.updateGallery(data, selectedCategory)
             this.updateFilters(data, selectedCategory)
-    
-        }).catch(error => {
-            //console.error('There was an error!', error)
-            this.#displayFetchGalleryError(error)
-        })
+        }
     }
 }
 
