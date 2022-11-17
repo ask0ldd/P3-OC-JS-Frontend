@@ -18,6 +18,46 @@ const unauthorizedUser = {'email':'ezaeaz.ezaeza@test.tld','password':'ezaeza'}
 
 */
 
+class APIWrapper {
+    static getCategories(){
+    }
+
+    static parseCategories(works){
+        let pushedIds = []
+        let categories = []
+
+        for(let i=0; i<Object.keys(works).length; i++)
+        {   
+            if(pushedIds.includes(works[i].category.id) === false)
+            {
+                categories.push(works[i].category)
+                pushedIds.push(works[i].category.id)
+            }
+        }
+        return categories
+    }
+
+    static async getWorks(){
+        try{
+            let works = (await fetch(`${api}works`)).json()
+            return works
+        }
+        catch(e){
+            console.log(e)
+        }
+    }
+
+    static async getWorks_nCategories(){
+        try{
+            let works = (await fetch(`${api}works`)).json()
+            let categories = parseCategories (works)
+            return [works, categories]
+        }
+        catch(e){
+            console.log(e)
+        }
+    }
+}
 
 
 //--------------
@@ -41,12 +81,12 @@ class Gallery {
     }
 
     getCategories(){
-        return this.categories.length !== 0 ? this.categories : false
+        return this.categories.length !== 0 ? this.categories : false // handle false response
     }
 
     #setSelectedCategory(selectedCategory = 0)
     {
-        this.selectedCategory = selectedCategory;
+        Number.isInteger(selectedCategory)===true ? this.selectedCategory = selectedCategory : false // handle false response
     }
 
     // *** REMOVE GALLERY AND/OR FILTERS OUT OF THE DOM
@@ -90,6 +130,8 @@ class Gallery {
                 pushedIds.push(data[i].category.id)
             }
         }
+
+        return this.categories
     }
 
     // *** INSERT A FILTER > DOM
@@ -147,9 +189,9 @@ class Gallery {
         }
     }
 
-    async displayGallery_filtered(selectedCategory = 0)
+    displayGallery_filtered(selectedCategory = 0)
     {
-        await fetch(`${api}works`).then((response)=>{
+        fetch(`${api}works`).then((response)=>{
 
             if(!response.ok || response.status!==200)
             {
@@ -187,7 +229,7 @@ class Modale {
         this.TitleNode_DOM
         this.currentModale = "editGallery"
         this.modaleBodyList = {"editGallery" : "div1", "UploadWork" : "div2", "workUploaded" : "div3"}
-        this.ModaleNode_DOM.addEventListener('click', () => this.close())
+        //this.ModaleNode_DOM.addEventListener('click', () => this.close())
         /*document.querySelector("#modale__container").click((e) =>
         {
             e.preventDefault();
@@ -199,7 +241,7 @@ class Modale {
     {
         this.#scrollLock(true)
         this.ModaleNode_DOM.style.display="flex"
-        //populateModaleGallery()
+        populateModaleGallery()
         this.toggleBodies()
     }
 
@@ -212,7 +254,7 @@ class Modale {
     toggleBodies(modaleBody = "editGallery")
     {
         // temporary
-        populateModaleGallery()
+        //populateModaleGallery()
     }
 
     #setTitle(title)
@@ -231,6 +273,10 @@ class Modale {
         }else{
             window.onscroll = () => {}
         }
+    }
+
+    editGallery(){
+
     }
     
 }
@@ -254,11 +300,11 @@ class Auth {
         return cookie.search("token")===-1 ? false : true
     }
 
-    static async LogInAttempt()
+    static LogInAttempt()
     {
-        let logs = {"email": user.email, "password": user.password}
+        let logs = {"email": user.email, "password": user.password} // new formData()
 
-        await fetch(`${api}users/login`, 
+        fetch(`${api}users/login`, 
         {
             method: 'POST',
             mode: 'cors',
@@ -334,9 +380,9 @@ function getModaleThumbnail(work){
     return div
 }
 
-async function populateModaleGallery()
+function populateModaleGallery()
 {
-    await fetch(`${api}works`).then((response)=>{
+    fetch(`${api}works`).then((response)=>{
         return response.json()
     }).then((data) => {
 

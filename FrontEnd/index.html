@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
 	<script type="text/javascript" src="script.js" defer></script>
@@ -117,10 +117,32 @@
 		<div id="modale__backnClose">
 			<span>x-</span><span style="cursor: pointer;" onclick="modale.close()">x</span>
 		</div>
-		<span id="modale__title">Title</span>
-		<div id="edition__gallery"></div> <!-- body modale -->
-		<hr class="modale__hr">
-		<input class="modale__button" type="button" value="placeHolder">
+		<div class="modale__body">
+			<span class="modale__title">Gallerie Photo</span> <!-- hx -->
+			<div id="edition__gallery"></div> <!-- modale__body -->
+			<hr class="modale__hr">
+			<input class="modale__button" type="button" value="Ajouter une photo">
+			<p>supprimer la gallerie</p>
+		</div>
+		<div class="modale__body">
+			<span class="modale__title">Ajout Photo</span> <!-- hx -->
+			<div id="addpic__container">
+				<img src="./assets/icons/picture-placeholder.png">
+				<input class="modale__button grey__bg--greentxt" type="button" value="+ Ajouter photo">
+			</div>
+			<label for="title">Titre</label>
+			<input type="text" name="title" id="title">
+			<label for="category">Catégorie</label>
+			<!--<input type="text" name="category" id="category">-->
+			<select name="category" id="category">
+				<option value="volvo">Volvo</option>
+				<option value="saab">Saab</option>
+				<option value="mercedes">Mercedes</option>
+				<option value="audi">Audi</option>
+			</select>
+			<hr class="modale__hr">
+			<input class="modale__button grey__bg--whitetxt" type="button" value="Valider">
+		</div>
 	</div>
 </aside>
 </body>

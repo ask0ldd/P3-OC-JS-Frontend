@@ -375,19 +375,19 @@ EDIT MODE CLASSES
 
 #opaque__container {
   width: 100vw;
-  height: 100%;
+  height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.3);
   /*display: flex;*/
-  align-items: center;
   justify-content: center;
   display: none;
   overflow: auto;
 }
 
 #modale__container {
+  margin-top: 64px;
   height: fit-content;
   flex-shrink: 0;
   /*max-height: 80vh;*/
@@ -405,13 +405,13 @@ EDIT MODE CLASSES
 #edition__gallery {
   display: flex;
   gap: 13px 8px;
-  max-width: 422px;
+  max-width: 420px;
   flex-wrap: wrap;
 }
 
 #edition__gallery .thumb {
   height: 104px;
-  width: 78px;
+  width: 77px;
   object-fit: cover;
 }
 
@@ -422,6 +422,7 @@ EDIT MODE CLASSES
   height: 17px;
   width: 17px;
   cursor: pointer;
+  margin: 6px 6px 0 0;
 }
 
 #modale__backnClose {
@@ -431,7 +432,7 @@ EDIT MODE CLASSES
   width: 564px;
 }
 
-#modale__title {
+.modale__title {
   font-family: "Work Sans";
   font-style: normal;
   font-weight: 400;
@@ -442,8 +443,12 @@ EDIT MODE CLASSES
 }
 
 .modale__hr {
-  width: 420px;
+  width: 100%;
   margin-top: 48px;
+  /*border: none;
+  border: 1px solid #b3b3b3;
+  height: 1px;
+  width: 100%;*/
 }
 
 .modale__button {
@@ -461,4 +466,69 @@ EDIT MODE CLASSES
 
 .modale__button:hover {
   background-color: #0e2f28;
+}
+
+#addpic__container {
+  background-color: #e8f1f6;
+  height: 168px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#addpic__container img {
+  width: 58px;
+  margin-top: 28px;
+}
+
+.modale__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 420px;
+}
+
+.modale__body p {
+  text-align: center;
+}
+
+.modale__body label {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  /*line-height: 16px;*/
+  color: #3d3d3d;
+  margin: 2em 0 1em 0;
+}
+
+.modale__body input,
+.modale__body select {
+  height: 50px;
+  font-size: 1.2em;
+  border: none;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+.modale__body select {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  padding-left: 16px;
+}
+
+.grey__bg--whitetxt {
+  background-color: #a7a7a7;
+  color: #fff;
+}
+
+.grey__bg--greentxt {
+  background-color: #a7a7a7;
+  color: #306685;
+}
+
+.green__bg--whitetxt {
+  background-color: #1d6154;
+  color: #fff;
 }
