@@ -65,6 +65,10 @@ class APIWrapper {
             return "error"
         }
     }
+
+    static async sendWork(){
+        // check token before anything
+    }
 }
 
 
@@ -85,17 +89,12 @@ class Gallery {
         this.galleryContainer = document.querySelector(gallerySelector)
         this.filtersContainer = document.querySelector(filtersSelector)
         this.#categories = []
-        this.#selectedCategory = 0;
+        this.#selectedCategory = 0
     }
 
-    getCategories(){
+    /*getCategories(){
         return this.categories.length !== 0 ? this.categories : false // handle false response
-    }
-
-    #setSelectedCategory(selectedCategory = 0)
-    {
-        Number.isInteger(selectedCategory)===true ? this.selectedCategory = selectedCategory : false // handle false response
-    }
+    }*/
 
     // *** REMOVE GALLERY AND/OR FILTERS OUT OF THE DOM
     clear(container)
@@ -125,23 +124,6 @@ class Gallery {
         }
     }
 
-    // *** GET RID OF DUPLICATES & STORE > this.categories (DOUBLONS)
-    /*#setCategories_withNoDuplicates(data){
-        let pushedIds = []
-        this.categories = []
-
-        for(let i=0; i<Object.keys(data).length; i++)
-        {   
-            if(pushedIds.includes(data[i].category.id) === false)
-            {
-                this.categories.push(data[i].category)
-                pushedIds.push(data[i].category.id)
-            }
-        }
-
-        return this.categories
-    }*/
-
     // *** INSERT A FILTER > DOM
     #addFilter(filterName, filterId)
     {
@@ -160,16 +142,14 @@ class Gallery {
     // *** INSERT ALL FILTER BUTTONS WITHOUT DUPLICATES > DOM / MARK THE SELECTED ONE
     updateFilters(data, selectedCategory = 0)
     {
-        this.#setSelectedCategory(selectedCategory)
-        //this.#setCategories_withNoDuplicates(data)
+        this.selectedCategory = selectedCategory
         this.clear("filters")
         this.#addFilter("Tous", 0)
-        //this.categories.forEach(element => this.#addFilter(element.name, element.id))
         APIWrapper.parseCategories(data).forEach(element => this.#addFilter(element.name, element.id))
     }
 
     // *** ERROR > GALLERY
-    #displayFetchGalleryError(error){
+    #displayGalleryErrorMsg(error){
         this.clear()
         let p = document.createElement("p")
         let blankCell = document.createElement("p")
@@ -183,14 +163,14 @@ class Gallery {
     #addToGallery(work)
     {
         let figure = document.createElement("figure")
-        figure.innerHTML = `<img src="${work.imageUrl}" alt="${work.title}" crossorigin="anonymous"><figcaption>${work.title}</figcaption>` // crossorigin : CORS
+        figure.innerHTML = `<img src="${work.imageUrl}" alt="${work.title}" crossorigin="anonymous"><figcaption>${work.title}</figcaption>` // crossorigin=ano : CORS
         this.galleryContainer.append(figure)
     }
 
     // *** INSERT A GROUP OF SELECTED WORKS > GALLERY
     updateGallery(works, selectedCategory = 0)
     {
-        this.#setSelectedCategory(selectedCategory)
+        this.selectedCategory = selectedCategory
         this.clear("gallery")
         for(let i=0; i<Object.keys(works).length; i++){
             // filtering works / 0 = no filter
@@ -200,11 +180,15 @@ class Gallery {
 
     async displayGallery_filtered(selectedCategory = 0)
     {
-        let data = await APIWrapper.getWorks()
-        if(data !== "error")
+        let allWorks = await APIWrapper.getWorks()
+        if(allWorks !== "error")
         {
-            this.updateGallery(data, selectedCategory)
-            this.updateFilters(data, selectedCategory)
+            this.updateGallery(allWorks, selectedCategory)
+            this.updateFilters(allWorks, selectedCategory)
+        }
+        else
+        {
+            this.#displayGalleryErrorMsg()
         }
     }
 }
@@ -412,7 +396,7 @@ function postWorkTest(image, title, url){
 function onloadIndex(){
     gallery = new Gallery(".gallery",".filters")
     modale = new Modale("#opaque__container")
-    gallery.displayGallery_filtered() // 0 = nofilter
+    gallery.displayGallery_filtered() // 0, blank = nofilter
     Auth.isTokenAlive() ? Auth.adminMode() : false // replace login par hi sophie
 }
 
