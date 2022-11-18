@@ -119,31 +119,34 @@
 		</div>
 
 		<!-- editGallery -->
-		<div class="modale__body" id="body__edit"><!-- modale__body -->
-			<span class="modale__title">Gallerie Photo</span> <!-- hx -->
+		<section class="modale__body" id="body__edit"><!-- modale__body -->
+			<h3>Gallerie Photo</h3> <!-- hx -->
 			<div id="edition__gallery"></div>
 			<hr class="modale__hr">
-			<input class="modale__button" type="button" value="Ajouter une photo">
-			<p>supprimer la gallerie</p>
-		</div>
+			<input class="modale__button" id="addpicture__button" type="button" value="Ajouter une photo">
+			<p style="margin-top:24px; color:#D65353;">supprimer la gallerie</p>
+		</section>
 
 		<!-- upload -->
-		<div class="modale__body" id="body__upload">
-			<span class="modale__title">Ajout Photo</span> <!-- hx -->
+		<form class="modale__body modale__body--hidden" id="body__upload">
+			<h3>Ajout Photo</h3> <!-- hx -->
 			<div id="addpic__container">
-				<img src="./assets/icons/picture-placeholder.png">
-				<input class="modale__button grey__bg--greentxt" type="button" value="+ Ajouter photo">
-				<!--<label for="worktoupload">jpg, png : 4mo max</label>-->
-				<input type="file" id="worktoupload" name="worktoupload" accept="image/png, image/jpeg">
+				<img id="preview__file" src="./assets/icons/picture-placeholder.png">
+				<!--<input class="modale__button grey__bg--greentxt" type="button" value="+ Ajouter photo">-->
+				<div style="display:flex; flex-direction: column; align-items: center;">
+					<input type="file" id="filetoupload" name="filetoupload" accept="image/png, image/jpeg">
+					<label for="filetoupload" class="modale__button grey__bg--greentxt fileselect_button">+ Ajouter photo</label>
+				</div>
+				<p style="font-size: 10px;">jpg, png : 4mo max</p>
 			</div>
 			<label for="title">Titre</label>
-			<input type="text" name="title" id="title">
+			<input type="text" name="title" id="title" required>
 			<label for="category">Catégorie</label>
-			<select name="categories" id="categories">
+			<select name="categories" id="categories" required>
 			</select>
 			<hr class="modale__hr">
 			<input class="modale__button grey__bg--whitetxt" type="button" value="Valider">
-		</div>
+		</form>
 
 	</div>
 </aside>

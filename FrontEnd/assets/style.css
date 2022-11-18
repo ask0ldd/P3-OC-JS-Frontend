@@ -395,7 +395,7 @@ EDIT MODE CLASSES
   max-width: 100vh;
   background-color: #fff;
   border-radius: 10px;
-  padding: 32px 36px;
+  padding: 32px 36px 48px 36px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -432,7 +432,7 @@ EDIT MODE CLASSES
   width: 564px;
 }
 
-.modale__title {
+h3 {
   font-family: "Work Sans";
   font-style: normal;
   font-weight: 400;
@@ -461,7 +461,9 @@ EDIT MODE CLASSES
   border: 1px solid #1d6154;
   cursor: pointer;
   color: #fffef8;
-  margin-top: 30px;
+  margin-top: 34px;
+  width: 236px;
+  align-self: center;
 }
 
 .modale__button:hover {
@@ -470,22 +472,28 @@ EDIT MODE CLASSES
 
 #addpic__container {
   background-color: #e8f1f6;
-  height: 168px;
+  /*height: 168px;*/
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 28px 0 20px 0;
+  width: 100%;
 }
 
 #addpic__container img {
   width: 58px;
-  margin-top: 28px;
 }
 
 .modale__body {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /*justify-content: center;*/
+  /*align-items: center;*/
   width: 420px;
+}
+
+.modale__body--hidden {
+  display: none;
 }
 
 .modale__body p {
@@ -502,10 +510,11 @@ EDIT MODE CLASSES
   margin: 2em 0 1em 0;
 }
 
-.modale__body input,
+.modale__body input[type="text"],
 .modale__body select {
   height: 50px;
   font-size: 1.2em;
+  width: 100%;
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
@@ -530,5 +539,25 @@ EDIT MODE CLASSES
 
 .green__bg--whitetxt {
   background-color: #1d6154;
+  color: #fff;
+}
+
+input[type="file"] {
+  all: unset;
+  display: none;
+}
+
+.fileselect_button {
+  cursor: pointer;
+  border: none;
+  color: #306685;
+  font-size: 14px;
+  font-weight: 500;
+  width: fit-content;
+  padding-right: 32px;
+  padding-left: 32px;
+}
+
+.fileselect_button:hover {
   color: #fff;
 }

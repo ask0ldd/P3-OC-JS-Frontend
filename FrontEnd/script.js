@@ -231,40 +231,55 @@ class Modale {
     constructor(modaleNode) 
     {
         this.ModaleNode_DOM = document.querySelector(modaleNode)
-        this.currentBody = "editGallery"
+        this.currentBody = "editBody"
         //this.modaleBodyList = {"editGallery" : "div1", "uploadWork" : "div2"}
         this.editGallery = document.querySelector("#edition__gallery")
         this.editBody = document.querySelector("#body__edit")
         this.uploadBody = document.querySelector("#body__upload")
         this.dropdownCategories = document.querySelector("#categories")
-        //this.ModaleNode_DOM.addEventListener('click', () => this.close())
-        /*document.querySelector("#modale__container").click((e) =>
-        {
-            e.preventDefault();
-            e.stopPropagation();
-        })*/
+        this.inputFile = document.querySelector("#filetoupload")
+        this.previewFile = document.querySelector("#preview__file")
+        this.switchButton = document.querySelector("#addpicture__button")
+        this.inputFile.addEventListener("change", () => {
+            // checksize & change aspect of send button
+            this.inputFile.files[0] ? this.previewFile.src = URL.createObjectURL(this.inputFile.files[0]) : this.previewFile.src = "./assets/icons/picture-placeholder.png"
+        })
+        this.switchButton.addEventListener('click', e => this.toggleBodies())
     }
 
-    open(modaleBody = "editGallery")
+    open()
     {
         this.#scrollLock(true)
         this.ModaleNode_DOM.style.display="flex"
         this.updateEditGallery()
-        this.toggleBodies()
         // better to call when toggling
         this.updateDropdownCategories()
+        //this.switchButton.addEventListener('click', e => this.toggleBodies())
     }
 
     close()
     {
+        this.currentBody !== "editBody" ? this.toggleBodies() : this.currentBody
+        //this.switchButton.removeEventListener('click', e => this.toggleBodies())
         this.ModaleNode_DOM.style.display="none"
         this.#scrollLock(false)
     }
 
-    toggleBodies(modaleBody = "editGallery")
+    toggleBodies()
     {
-        // temporary
-        //populateModaleGallery()
+        if(this.currentBody !== "editBody")
+        {
+            this.editBody.style.display="flex"
+            this.uploadBody.style.display="none"
+            this.currentBody = "editBody"
+        }
+        else
+        {
+            this.editBody.style.display="none"
+            this.uploadBody.style.display="flex" 
+            this.currentBody = "uploadBody"
+        }
+        
     }
 
     #addThumbnail(work)
@@ -303,8 +318,12 @@ class Modale {
         }
     }
 
+    previewSelectedImage(){
+
+    }
+
     #checkWork(){
-        //check size among others
+        // check size among others
     }
 
     async updateDropdownCategories()
