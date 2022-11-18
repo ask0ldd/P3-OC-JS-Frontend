@@ -280,16 +280,12 @@ class Modale {
 
         this.inputFile.addEventListener("change", e => this.previewSelectedImage())
         this.switchButton.addEventListener("click", e => this.toggleBodies())
-        this.form.addEventListener('submit', e => this.processForm(e))
+        this.form.addEventListener('submit', e => this.submitForm(e))
     }
 
-    /*********** */
-    processForm(e){ //extends FormData
-        // max caracteres title
-        // category entier appartenant a categories
-        // file max size
+    submitForm(e)
+    { 
         e.preventDefault()
-        
         const formData = new CustomFormData(this.form)
         formData.process()
     }
@@ -401,21 +397,32 @@ class Modale {
 /****/
 
 class CustomFormData extends FormData {
+
+    //--------------
+    /*
+    Extends FormData to add a validation & process method
+    */
+    //--------------
+
     constructor(form) {
-      super(form);
+      super(form)
     }
 
     process() {
-        // validate data before post
+        let error = "errors : "
         const datas = {
             "file" : this.get("image"),
             "title" : this.get("title"),
             "category" : this.get("category")
         }
 
-        console.log(datas)
+        error += (datas.title.length < 1 && datas.title.length > 128) ? "title not long enough; " : "" // avoid injections
+        error += parseInt(datas.category) === NaN ? "non existent category; " : "" // checker contre categories dans db
+        error += (datas.file.size < 1 && datas.file.size > 4200000) ? "file is missing or too large; " : ""
 
-        APIWrapper.postWork(this)
+        console.log(error)
+
+        return error === "errors : " ? APIWrapper.postWork(this) : error
     }
   }
 
@@ -438,14 +445,15 @@ class Auth {
     }
 
     static getToken()
-    {   //handle missing cookie, why "?"
+    {   //handle missing cookie
         //document.cookie = "test1=Hello; SameSite=None; Secure";
         const token = document.cookie.split('; ').find((cookie) => cookie.startsWith('token='))?.split('=')[1]
-        return token ? token : false
+        return token !== undefined ? token : false
     }
 
     static LogInAttempt()
     {
+        // validate champs
         let logs = {"email": user.email, "password": user.password} // new formData()
 
         fetch(`${api}users/login`, 
@@ -469,6 +477,14 @@ class Auth {
         })
 
         console.log("tried to log")
+
+        // error message > form when login failed
+    }
+
+    static logout()
+    {
+        // remove cookie
+        window.location.href = "index.html"
     }
 
     static adminMode(){
@@ -486,10 +502,6 @@ class Auth {
     }
 }
 
-
-
-
-
 /***
  * MAIN****
  ***/
@@ -499,6 +511,5 @@ function onloadIndex(){
     gallery = new Gallery(".gallery",".filters")
     modale = new Modale("#opaque__container")
     gallery.displayGallery_filtered() // 0, blank = nofilter
-    Auth.isTokenAlive() ? Auth.adminMode() : false // replace login par hi sophie
+    Auth.isTokenAlive() ? Auth.adminMode() : false // replace login par logout
 }
-
