@@ -285,21 +285,13 @@ class Modale {
 
     /*********** */
     processForm(e){ //extends FormData
-        // check size among others & if exists
+        // max caracteres title
+        // category entier appartenant a categories
+        // file max size
         e.preventDefault()
         
-        const formData = new FormData(this.form)
-
-        // validate data before post
-        const datas = {
-            "file" : formData.get("image"),
-            "title" : formData.get("title"),
-            "category" : formData.get("category")
-        }
-
-        console.log(datas)
-
-        APIWrapper.postWork(formData)
+        const formData = new CustomFormData(this.form)
+        formData.process()
     }
 
     open()
@@ -406,6 +398,26 @@ class Modale {
     
 }
 
+/****/
+
+class CustomFormData extends FormData {
+    constructor(form) {
+      super(form);
+    }
+
+    process() {
+        // validate data before post
+        const datas = {
+            "file" : this.get("image"),
+            "title" : this.get("title"),
+            "category" : this.get("category")
+        }
+
+        console.log(datas)
+
+        APIWrapper.postWork(this)
+    }
+  }
 
 /****/
 
