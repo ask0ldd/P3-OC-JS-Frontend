@@ -115,12 +115,12 @@
 <aside id="opaque__container">
 	<div id="modale__container">
 		<div id="modale__backnClose">
-			<span>x-</span><span style="cursor: pointer;" onclick="modale.close()">x</span>
+			<span style="cursor: pointer;" onclick="modale.toggleBodies()">x-</span><span style="cursor: pointer;" onclick="modale.close()">x</span>
 		</div>
 
 		<!-- editGallery -->
-		<section class="modale__body" id="body__edit"><!-- modale__body -->
-			<h3>Gallerie Photo</h3> <!-- hx -->
+		<section class="modale__body" id="body__edit">
+			<h3>Gallerie Photo</h3>
 			<div id="edition__gallery"></div>
 			<hr class="modale__hr">
 			<input class="modale__button" id="addpicture__button" type="button" value="Ajouter une photo">
@@ -128,13 +128,13 @@
 		</section>
 
 		<!-- upload -->
-		<form class="modale__body modale__body--hidden" id="body__upload">
-			<h3>Ajout Photo</h3> <!-- hx -->
+		<form class="modale__body modale__body--hidden" id="form__upload">
+			<h3>Ajout Photo</h3>
 			<div id="addpic__container">
 				<img id="preview__file" src="./assets/icons/picture-placeholder.png">
 				<!--<input class="modale__button grey__bg--greentxt" type="button" value="+ Ajouter photo">-->
 				<div style="display:flex; flex-direction: column; align-items: center;">
-					<input type="file" id="filetoupload" name="filetoupload" accept="image/png, image/jpeg">
+					<input type="file" id="filetoupload" name="image" accept="image/png, image/jpeg">
 					<label for="filetoupload" class="modale__button grey__bg--greentxt fileselect_button">+ Ajouter photo</label>
 				</div>
 				<p style="font-size: 10px;">jpg, png : 4mo max</p>
@@ -142,10 +142,10 @@
 			<label for="title">Titre</label>
 			<input type="text" name="title" id="title" required>
 			<label for="category">Catégorie</label>
-			<select name="categories" id="categories" required>
+			<select name="category" id="category" required>
 			</select>
 			<hr class="modale__hr">
-			<input class="modale__button grey__bg--whitetxt" type="button" value="Valider">
+			<input class="modale__button grey__bg--whitetxt" type="submit" value="Valider">
 		</form>
 
 	</div>

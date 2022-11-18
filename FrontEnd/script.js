@@ -19,6 +19,43 @@ const unauthorizedUser = {'email':'ezaeaz.ezaeza@test.tld','password':'ezaeza'}
 */
 
 class APIWrapper {
+
+    static convertImgtoBinString(){
+       
+    }
+
+    static async postWork(formData)
+    {
+        if(Auth.isTokenAlive()){
+            try
+            {
+                const token = Auth.getToken()
+                let feedback = await fetch(`${api}works`, 
+                {
+                    method: 'POST',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    headers: {
+                        /*'Content-Type': 'multipart/form-data',*/
+                        'Authorization': `Bearer ${token}`
+                    },
+                    redirect: 'follow',
+                    referrerPolicy: 'no-referrer',
+                    body: formData     
+                })
+                console.log(feedback)
+                return feedback
+            }
+            catch(e)
+            {
+                console.log(e)
+                return "error"
+            }
+        }
+
+    }
+
     static async getCategories(){
         try{
             let works = (await fetch(`${api}categories`)).json()
@@ -232,19 +269,37 @@ class Modale {
     {
         this.ModaleNode_DOM = document.querySelector(modaleNode)
         this.currentBody = "editBody"
-        //this.modaleBodyList = {"editGallery" : "div1", "uploadWork" : "div2"}
         this.editGallery = document.querySelector("#edition__gallery")
         this.editBody = document.querySelector("#body__edit")
-        this.uploadBody = document.querySelector("#body__upload")
-        this.dropdownCategories = document.querySelector("#categories")
+        this.uploadBody = document.querySelector("#form__upload")
+        this.dropdownCategories = document.querySelector("#category")
         this.inputFile = document.querySelector("#filetoupload")
         this.previewFile = document.querySelector("#preview__file")
         this.switchButton = document.querySelector("#addpicture__button")
-        this.inputFile.addEventListener("change", () => {
-            // checksize & change aspect of send button
-            this.inputFile.files[0] ? this.previewFile.src = URL.createObjectURL(this.inputFile.files[0]) : this.previewFile.src = "./assets/icons/picture-placeholder.png"
-        })
-        this.switchButton.addEventListener('click', e => this.toggleBodies())
+        this.form = document.querySelector("#form__upload")
+
+        this.inputFile.addEventListener("change", e => this.previewSelectedImage())
+        this.switchButton.addEventListener("click", e => this.toggleBodies())
+        this.form.addEventListener('submit', e => this.processForm(e))
+    }
+
+    /*********** */
+    processForm(e){ //extends FormData
+        // check size among others & if exists
+        e.preventDefault()
+        
+        const formData = new FormData(this.form)
+
+        // validate data before post
+        const datas = {
+            "file" : formData.get("image"),
+            "title" : formData.get("title"),
+            "category" : formData.get("category")
+        }
+
+        console.log(datas)
+
+        APIWrapper.postWork(formData)
     }
 
     open()
@@ -254,13 +309,11 @@ class Modale {
         this.updateEditGallery()
         // better to call when toggling
         this.updateDropdownCategories()
-        //this.switchButton.addEventListener('click', e => this.toggleBodies())
     }
 
     close()
     {
         this.currentBody !== "editBody" ? this.toggleBodies() : this.currentBody
-        //this.switchButton.removeEventListener('click', e => this.toggleBodies())
         this.ModaleNode_DOM.style.display="none"
         this.#scrollLock(false)
     }
@@ -319,11 +372,8 @@ class Modale {
     }
 
     previewSelectedImage(){
-
-    }
-
-    #checkWork(){
-        // check size among others
+        // check file.size before previewing
+        this.inputFile.files[0] ? this.previewFile.src = URL.createObjectURL(this.inputFile.files[0]) : this.previewFile.src = "./assets/icons/picture-placeholder.png"
     }
 
     async updateDropdownCategories()
@@ -334,7 +384,7 @@ class Modale {
         categories.forEach( el => 
         {
             let option = document.createElement("option")
-            option.value = el.name
+            option.value = el.id
             option.textContent = el.name
             this.dropdownCategories.append(option)
         })
@@ -373,6 +423,13 @@ class Auth {
         // deal w/ errors : no cookie or no string type
         const cookie = document.cookie
         return cookie.search("token")===-1 ? false : true
+    }
+
+    static getToken()
+    {   //handle missing cookie, why "?"
+        //document.cookie = "test1=Hello; SameSite=None; Secure";
+        const token = document.cookie.split('; ').find((cookie) => cookie.startsWith('token='))?.split('=')[1]
+        return token ? token : false
     }
 
     static LogInAttempt()
@@ -426,6 +483,7 @@ class Auth {
  ***/
 
 function onloadIndex(){
+    APIWrapper.convertImgtoBinString()
     gallery = new Gallery(".gallery",".filters")
     modale = new Modale("#opaque__container")
     gallery.displayGallery_filtered() // 0, blank = nofilter
