@@ -195,6 +195,10 @@ nav li {
   font-size: 1.2em;
 }
 
+#button__logout {
+  display: none;
+}
+
 .selected--menuitem {
   font-weight: 600;
 }

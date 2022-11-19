@@ -25,7 +25,7 @@ class APIWrapper {
             const token = Auth.getToken()
             if(token === false) return {"error" : "not connected"}
 
-            let response = await fetch(`${api}works`, // delete useless params below
+            let response = await fetch(`${api}works`,
             {
                 method: 'POST',
                 headers: {
@@ -516,9 +516,16 @@ class Auth {
         return token !== undefined ? token : false
     }
 
+    static logout()
+    {
+        document.cookie = "token=; Max-Age=0;"
+        document.cookie = "id=; Max-Age=0;"
+        window.location.href = "index.html"
+    }
+
     static async LogInAttempt()
     {
-        // validate champs
+        // validate fields
         let logs = {"email": user.email, "password": user.password} // new formData()
 
         try{
@@ -560,14 +567,6 @@ class Auth {
             this.#showError("Server Unavailable. Retry Later.")
             return "Fetch error"
         }
-
-        //console.log("tried to log")
-    }
-
-    static logout()
-    {
-        // remove cookie
-        window.location.href = "index.html"
     }
 
     static adminMode(){
@@ -577,11 +576,8 @@ class Auth {
             })
         editTopBar.classList.toggle('editionmode__topbar--on')
         header.classList.toggle('header__padding--notopBar')
-        // login => hi sophie
-    }
-
-    static visitorMode(){
-        // login button back
+        document.querySelector('#button__login').style.display = "none"
+        document.querySelector('#button__logout').style.display = "block"
     }
 }
 
