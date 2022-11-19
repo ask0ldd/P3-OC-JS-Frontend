@@ -149,9 +149,14 @@ header {
   display: flex;
   justify-content: space-between;
   /*margin: 50px 0;*/
+  padding-top: 110px;
   row-gap: 50px;
   flex-wrap: wrap;
 }
+
+/*header .nomargins {
+  margin: 0;
+}*/
 
 section {
   margin: 50px 0;
@@ -209,7 +214,17 @@ li:hover {
   display: block;
   margin: auto;
   width: 80%;
+  /*position: relative;*/
 }
+
+/*#sophie::after {
+  content: "rzarzaazre";
+  display: block;
+  position: absolute;
+  top: 200px;
+  left: 10px;
+  color: red;
+}*/
 
 #introduction article {
   flex: 1;
@@ -363,17 +378,41 @@ EDIT MODE CLASSES
   height: 60px;
   width: 100%;
   background-color: #000;
-  flex-shrink: 0;
+  /*flex-shrink: 0;*/
   display: none;
+  color: #fff;
 }
 
 .editionmode__topbar--on {
-  display: block;
+  display: flex;
+  position: fixed;
+  justify-content: center;
+  column-gap: 20px;
+  align-items: center;
+  left: 0;
+  top: 0;
+  font-size: 16px;
+}
+
+.button__topbar {
+  background-color: #fff;
+  color: #000;
+  font-size: 14px;
+  padding: 14px 24px;
+  font-weight: 500;
+  border-radius: 60px;
+  cursor: pointer;
 }
 
 .header__padding--notopBar {
   padding-top: 50px;
 }
+
+/*
+
+MODALE
+
+*/
 
 #opaque__container {
   width: 100vw;
@@ -563,4 +602,31 @@ input[type="file"] {
 
 .fileselect_button:hover {
   color: #fff;
+}
+
+/*
+
+LOGIN PAGE
+
+*/
+
+.login__errorbox {
+  background-color: #ffdddd;
+  width: 100%;
+  border: 1px solid #ff8888;
+  padding: 16px 32px;
+  width: 100%;
+  color: #dd6666;
+  /*display: none;*/
+}
+
+.uploadwork__errorbox {
+  margin-top: 32px;
+  background-color: #ffdddd;
+  width: 100%;
+  border: 1px solid #ff8888;
+  padding: 16px 32px;
+  width: calc(100% - 66px);
+  color: #dd6666;
+  /*display: none;*/
 }

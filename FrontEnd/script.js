@@ -6,6 +6,9 @@ const editIcons = document.querySelectorAll(".edit__icon")
 const editTopBar = document.querySelector(".editionmode__topbar")
 const header = document.querySelector("#header")
 
+/*const APIErrors = ['Fetch Error', ]
+const formErrors = {'file' : 'File Size Error', 'category' : 'Unknown Category', 'title' : 'Incorrect Title', 'token' : 'Log First'}
+const logErrors = ['User Unknown', 'Not An Email']*/
 
 let gallery
 let modale
@@ -26,33 +29,38 @@ class APIWrapper {
 
     static async postWork(formData)
     {
-        if(Auth.isTokenAlive()){
-            try
+        try
+        {
+            const token = Auth.getToken()
+
+            if(token === false) return {"error" : "not connected"}
+
+            let feedback = await fetch(`${api}works`, 
             {
-                const token = Auth.getToken()
-                let feedback = await fetch(`${api}works`, 
-                {
-                    method: 'POST',
-                    mode: 'cors',
-                    cache: 'no-cache',
-                    credentials: 'same-origin',
-                    headers: {
-                        /*'Content-Type': 'multipart/form-data',*/
-                        'Authorization': `Bearer ${token}`
-                    },
-                    redirect: 'follow',
-                    referrerPolicy: 'no-referrer',
-                    body: formData     
-                })
-                console.log(feedback)
-                return feedback
-            }
-            catch(e)
-            {
-                console.log(e)
-                return "error"
-            }
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                    /*'Content-Type': 'multipart/form-data',*/
+                    'Authorization': `Bearer ${token}`
+                },
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer',
+                body: formData     
+            })
+
+            console.log(feedback)
+            if (!feedback.ok) return {"error" : "fetch error"}
+            // console.log(feedback)
+            return feedback
         }
+        catch(e)
+        {
+            console.log(e)
+            return {"error" : e}
+        }
+        
 
     }
 
@@ -108,7 +116,7 @@ class APIWrapper {
         }
     }
 
-    static async getWorks_nCategories()
+ /*   static async getWorks_nCategories()
     {
         try{
             let works = (await fetch(`${api}works`)).json()
@@ -120,11 +128,7 @@ class APIWrapper {
             console.log(e)
             return "error"
         }
-    }
-
-    static async sendWork(){
-        // check token before anything
-    }
+    }*/
 
     deleteWork(workId)
     {
@@ -409,20 +413,21 @@ class CustomFormData extends FormData {
     }
 
     process() {
-        let error = "errors : "
+        let formErrors = []
         const datas = {
             "file" : this.get("image"),
             "title" : this.get("title"),
             "category" : this.get("category")
         }
 
-        error += (datas.title.length < 1 && datas.title.length > 128) ? "title not long enough; " : "" // avoid injections
-        error += parseInt(datas.category) === NaN ? "non existent category; " : "" // checker contre categories dans db
-        error += (datas.file.size < 1 && datas.file.size > 4200000) ? "file is missing or too large; " : ""
+        if(datas.title.length < 1 && datas.title.length > 128) formErrors.push("Invalid Title")
+        if(parseInt(datas.category) === NaN) formErrors.push("Unknown Category") // verifier dans liste categories
+        if(datas.file.size < 1 || datas.file.size > 4200000 || datas.file.size === undefined) formErrors.push("Filesize Error")
+        console.log(formErrors)
 
-        console.log(error)
+        //const postResponse = APIWrapper.postWork(this)
 
-        return error === "errors : " ? APIWrapper.postWork(this) : error
+        return formErrors.length === 0 ? APIWrapper.postWork(this) : formErrors
     }
   }
 
@@ -502,11 +507,16 @@ class Auth {
     }
 }
 
-/***
- * MAIN****
- ***/
+/****/
 
 function onloadIndex(){
+
+    //--------------
+    /*
+    MAIN
+    */
+    //--------------
+
     APIWrapper.convertImgtoBinString()
     gallery = new Gallery(".gallery",".filters")
     modale = new Modale("#opaque__container")

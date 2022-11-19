@@ -12,7 +12,7 @@
 	<script type="text/javascript" src="script.js" defer></script>
 </head>
 <body>
-<header>
+<header class="header__padding--notopBar">
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
@@ -30,6 +30,7 @@
 	<section id="contact">
 		<h2>Log In</h2>
 		<form action="javascript:Auth.LogInAttempt()">
+			<div class="login__errorbox">Error</div>
 			<label for="email">E-mail</label>
 			<!--<input type="email" name="email" id="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required> -->
 			<input type="email" name="email" id="email"> 

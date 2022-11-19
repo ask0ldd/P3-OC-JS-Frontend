@@ -6,14 +6,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Work+Sans&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
 	<script type="text/javascript" src="script.js" defer></script>
 </head>
 <body onload="onloadIndex()">
 <header id="header" class="header__padding--notopBar">
-	<div class="editionmode__topbar"></div>
+	<div class="editionmode__topbar">Mode édition<div class="button__topbar">publier les changements</div></div>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
@@ -139,6 +139,7 @@
 				</div>
 				<p style="font-size: 10px;">jpg, png : 4mo max</p>
 			</div>
+			<div class="uploadwork__errorbox"></div>
 			<label for="title">Titre</label>
 			<input type="text" name="title" id="title" required>
 			<label for="category">Catégorie</label>
