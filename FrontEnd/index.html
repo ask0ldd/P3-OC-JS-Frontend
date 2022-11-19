@@ -134,7 +134,7 @@
 				<img id="preview__file" src="./assets/icons/picture-placeholder.png">
 				<!--<input class="modale__button grey__bg--greentxt" type="button" value="+ Ajouter photo">-->
 				<div style="display:flex; flex-direction: column; align-items: center;">
-					<input type="file" id="filetoupload" name="image" accept="image/png, image/jpeg">
+					<input type="file" id="filetoupload" name="image" accept="image/png, image/jpeg" required>
 					<label for="filetoupload" class="modale__button grey__bg--greentxt fileselect_button">+ Ajouter photo</label>
 				</div>
 				<p style="font-size: 10px;">jpg, png : 4mo max</p>
@@ -143,10 +143,10 @@
 			<label for="title">Titre</label>
 			<input type="text" name="title" id="title" required>
 			<label for="category">Catégorie</label>
-			<select name="category" id="category" required>
+			<select name="category" id="category">
 			</select>
 			<hr class="modale__hr">
-			<input class="modale__button grey__bg--whitetxt" type="submit" value="Valider">
+			<input class="modale__button grey__bg--whitetxt" type="submit" id="upload__submitbutton" value="Valider">
 		</form>
 
 	</div>

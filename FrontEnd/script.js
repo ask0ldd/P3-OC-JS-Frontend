@@ -33,15 +33,9 @@ class APIWrapper {
             let response = await fetch(`${api}works`, // delete useless params below
             {
                 method: 'POST',
-                mode: 'cors',
-                cache: 'no-cache',
-                credentials: 'same-origin',
                 headers: {
-                    /*'Content-Type': 'multipart/form-data',*/
                     'Authorization': `Bearer ${token}`
                 },
-                redirect: 'follow',
-                referrerPolicy: 'no-referrer',
                 body: formData     
             })
 
@@ -105,9 +99,28 @@ class APIWrapper {
         }
     }
 
-    deleteWork(workId)
+    static async deleteWork(workId)
     {
-        console.log("work deleted : ", workId)
+        try
+        {
+            const token = Auth.getToken()
+
+            if(token === false) return {"error" : "not connected"}
+
+            let response = await fetch(`${api}works/${workId}`, // delete useless params below
+            {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }   
+            })
+
+            return response.ok ? false : "fetch error"
+        }
+        catch(e)
+        {
+            return "fetch error"
+        }
     }
 }
 
@@ -257,10 +270,12 @@ class Modale {
         this.previewFile = document.querySelector("#preview__file")
         this.switchButton = document.querySelector("#addpicture__button")
         this.form = document.querySelector("#form__upload")
+        this.formButton = document.querySelector("#upload__submitbutton")
 
         this.inputFile.addEventListener("change", e => this.previewSelectedImage())
         this.switchButton.addEventListener("click", e => this.toggleBodies())
-        this.form.addEventListener('submit', e => this.submitForm(e))
+        //this.formButton.addEventListener("click", e => this.submitForm(e))
+        this.form.addEventListener("submit", e => this.submitForm(e))
         window.onclick = (event) =>
         {       
             if (event.target == this.ModaleNode_DOM) this.close()
@@ -268,10 +283,15 @@ class Modale {
     }
 
     submitForm(e)
-    { 
+    {
         e.preventDefault()
+        /*e.stopPropagation()
+        e.stopImmediatePropagation()*/
         const formData = new CustomFormData(this.form)
         formData.process()
+        /*toggleBodies()*/
+        this.form.reset()
+        this.close()
     }
 
     open()
@@ -288,6 +308,7 @@ class Modale {
         this.currentBody !== "editBody" ? this.toggleBodies() : this.currentBody
         this.ModaleNode_DOM.style.display = "none"
         this.#scrollLock(false)
+        window.location.reload()
     }
 
     toggleBodies()
@@ -316,8 +337,14 @@ class Modale {
         <div style="display:flex; flex-direction:column;">
         <img class="thumb" src="${work.imageUrl}" crossorigin="anonymous">
         <a href="#" style="font-size:12px; margin-top:4px;">éditer</a>
-        <img class="bin__icon" src="./assets/icons/bin_icon.png" onclick="deleteWork(${work.id})">`
+        <img class="bin__icon" src="./assets/icons/bin_icon.png" onclick="modale.deleteWork(${work.id})">`
         this.editGallery.append(div)
+    }
+
+    async deleteWork(id)
+    {
+        await APIWrapper.deleteWork(id)
+        await this.updateEditGallery()
     }
 
     #clearEditGallery()
@@ -420,14 +447,17 @@ class CustomFormData extends FormData {
     async #isValidCategory(category) 
     {
         const categories = await APIWrapper.getCategories()
+        let ids = []
 
         if(categories !== "fetch error")
         {
-            
+            categories.forEach( el => ids.push(el.id))
+            console.log(ids.includes(parseInt(category)))
+            return ids.includes(parseInt(category)) ? true : false
         }
         else
         {
-            // show error form
+            return false
         }
     }
 
@@ -440,13 +470,15 @@ class CustomFormData extends FormData {
         }
 
         if(datas.title.length < 1 && datas.title.length > 128) formErrors.push("Invalid Title") 
-        if(parseInt(datas.category) === NaN) formErrors.push("Unknown Category") // verifier dans liste categories
+        if(parseInt(datas.category) === NaN && await this.#isValidCategory(datas.category)) formErrors.push("Unknown Category") // verifier dans liste categories
         if(datas.file.size < 1 || datas.file.size > 4200000 || datas.file.size === undefined || this.#isValidFileType(datas.file.type) !== true ) formErrors.push("Invalid File")
         
         console.log(formErrors)
-
+  
         // fetch error test
-        return formErrors.length === 0 ? await APIWrapper.pushWork(this) : formErrors
+        //return formErrors.length === 0 ? await APIWrapper.pushWork(this) : formErrors
+
+        await APIWrapper.pushWork(this)
 
         // if APIWrapper.pushWork === true sinon error
     }
@@ -478,28 +510,54 @@ class Auth {
     }
 
     static getToken()
-    {   //handle missing cookie
+    {   // handle missing cookie
         //document.cookie = "test1=Hello; SameSite=None; Secure";
         const token = document.cookie.split('; ').find((cookie) => cookie.startsWith('token='))?.split('=')[1]
         return token !== undefined ? token : false
     }
 
-    static LogInAttempt()
+    static async LogInAttempt()
     {
         // validate champs
         let logs = {"email": user.email, "password": user.password} // new formData()
 
-        fetch(`${api}users/login`, 
+        try{
+            let response = await fetch(`${api}users/login`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(logs)        
+            })
+
+            if(response.ok)
+            {
+                let userDatas = await response.json()
+                document.cookie = `id=${userDatas.userId}; Secure`
+                document.cookie = `token=${userDatas.token}; Secure`
+                window.location.href = "index.html"
+            }
+            else
+            {
+                this.showError("fetch error")
+                return "fetch error"
+            }
+        }
+        catch
+        {
+            this.showError("fetch error")
+            return "fetch error"
+        }
+
+
+        /*
+        fetch(`${api}users/login`,
         {
             method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             },
-            redirect: 'follow',
-            referrerPolicy: 'no-referrer',
             body: JSON.stringify(logs)        
         }).then((response) => {
             return response.json()
@@ -507,7 +565,7 @@ class Auth {
             document.cookie = `id=${userDatas.userId}; Secure`
             document.cookie = `token=${userDatas.token}; Secure`
             window.location.href = "index.html"
-        })
+        })*/
 
         console.log("tried to log")
 
