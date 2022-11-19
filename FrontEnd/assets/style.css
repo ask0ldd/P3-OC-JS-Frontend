@@ -425,6 +425,7 @@ MODALE
   justify-content: center;
   display: none;
   overflow: auto;
+  z-index: 1;
 }
 
 #modale__container {

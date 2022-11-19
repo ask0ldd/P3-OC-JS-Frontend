@@ -18,16 +18,11 @@ const user = {'email':'sophie.bluel@test.tld','password':'S0phie'}
 const unauthorizedUser = {'email':'ezaeaz.ezaeza@test.tld','password':'ezaeza'}
 
 /* tests to implement : wrong endpoint, wrong ip, non existent work id, no work at all, selectedcategory non existent, empty gallery on server, empty categories
-
 */
 
 class APIWrapper {
 
-    static convertImgtoBinString(){
-       
-    }
-
-    static async postWork(formData)
+    static async pushWork(formData)
     {
         try
         {
@@ -35,7 +30,7 @@ class APIWrapper {
 
             if(token === false) return {"error" : "not connected"}
 
-            let feedback = await fetch(`${api}works`, 
+            let response = await fetch(`${api}works`, // delete useless params below
             {
                 method: 'POST',
                 mode: 'cors',
@@ -50,34 +45,29 @@ class APIWrapper {
                 body: formData     
             })
 
-            console.log(feedback)
-            if (!feedback.ok) return {"error" : "fetch error"}
-            // console.log(feedback)
-            return feedback
+            return response.ok ? true : "fetch error"
         }
         catch(e)
         {
-            console.log(e)
-            return {"error" : e}
+            return "fetch error"
         }
-        
-
     }
 
     static async getCategories(){
-        try{
-            let works = (await fetch(`${api}categories`)).json()
-            return works
+        try
+        {
+            let response = await fetch(`${api}categories`)
+            return response.ok ? response.json() : "fetch error"
         }
-
-        catch(e){
-            console.log(e)
-            return "error"
+        catch(e)
+        {
+            return "fetch error"
         }
     }
 
     // *** Extract Categories out of works & get rid of any duplicate
-    static parseCategories(works){
+    static parseCategories(works)
+    {
         let pushedIds = []
         let categories = []
 
@@ -102,33 +92,18 @@ class APIWrapper {
         return set*/
     }
 
-    static async getWorks(){
-        try{
-            // tester 200
-            let works = (await fetch(`${api}works`)).json()
-            //console.log(await works)
-            return works
-        }
-
-        catch(e){
-            console.log(e)
-            return "error"
-        }
-    }
-
- /*   static async getWorks_nCategories()
+    static async getWorks()
     {
         try{
-            let works = (await fetch(`${api}works`)).json()
-            let categories = parseCategories (works)
-            return [works, categories]
+            let response = await fetch(`${api}works`)
+            return response.ok ? response.json() : "fetch error"
         }
 
         catch(e){
             console.log(e)
-            return "error"
+            return "fetch error"
         }
-    }*/
+    }
 
     deleteWork(workId)
     {
@@ -217,7 +192,7 @@ class Gallery {
         let p = document.createElement("p")
         let blankCell = document.createElement("p")
         p.classList.add("gallery__errormsg")
-        p.innerHTML = `${error}<br><br>` || "Network Error. Can't display Gallery."
+        p.innerHTML = error ? `${error}<br><br>` : "Network Error. Can't display Gallery."
         this.galleryContainer.append(blankCell)
         this.galleryContainer.append(p)
     }
@@ -245,7 +220,7 @@ class Gallery {
     async displayGallery_filtered(selectedCategory = 0)
     {
         let allWorks = await APIWrapper.getWorks()
-        if(allWorks !== "error")
+        if(allWorks !== "fetch error")
         {
             this.updateGallery(allWorks, selectedCategory)
             this.updateFilters(allWorks, selectedCategory)
@@ -272,6 +247,7 @@ class Modale {
     constructor(modaleNode) 
     {
         this.ModaleNode_DOM = document.querySelector(modaleNode)
+        //this.modale = document.getElementById("opaque__container");
         this.currentBody = "editBody"
         this.editGallery = document.querySelector("#edition__gallery")
         this.editBody = document.querySelector("#body__edit")
@@ -285,6 +261,10 @@ class Modale {
         this.inputFile.addEventListener("change", e => this.previewSelectedImage())
         this.switchButton.addEventListener("click", e => this.toggleBodies())
         this.form.addEventListener('submit', e => this.submitForm(e))
+        window.onclick = (event) =>
+        {       
+            if (event.target == this.ModaleNode_DOM) this.close()
+        }
     }
 
     submitForm(e)
@@ -297,7 +277,7 @@ class Modale {
     open()
     {
         this.#scrollLock(true)
-        this.ModaleNode_DOM.style.display="flex"
+        this.ModaleNode_DOM.style.display = "flex"
         this.updateEditGallery()
         // better to call when toggling
         this.updateDropdownCategories()
@@ -306,7 +286,7 @@ class Modale {
     close()
     {
         this.currentBody !== "editBody" ? this.toggleBodies() : this.currentBody
-        this.ModaleNode_DOM.style.display="none"
+        this.ModaleNode_DOM.style.display = "none"
         this.#scrollLock(false)
     }
 
@@ -314,14 +294,14 @@ class Modale {
     {
         if(this.currentBody !== "editBody")
         {
-            this.editBody.style.display="flex"
-            this.uploadBody.style.display="none"
+            this.editBody.style.display = "flex"
+            this.uploadBody.style.display = "none"
             this.currentBody = "editBody"
         }
         else
         {
-            this.editBody.style.display="none"
-            this.uploadBody.style.display="flex" 
+            this.editBody.style.display = "none"
+            this.uploadBody.style.display = "flex" 
             this.currentBody = "uploadBody"
         }
         
@@ -352,19 +332,27 @@ class Modale {
     {
         const works = await APIWrapper.getWorks()
 
-        this.#clearEditGallery()
-        works.forEach( el => this.#addThumbnail(el))
+        if(works !== "fetch error")
+        {
+            this.#clearEditGallery()
+            works.forEach( el => this.#addThumbnail(el))
+        }
+        else
+        {
+            // show error > editgallery
+        }
     }
 
-    #clearDropdown(){
+    #clearDropdown()
+    {
         while (this.dropdownCategories.lastElementChild) 
         {
             this.dropdownCategories.removeChild(this.dropdownCategories.lastElementChild)
         }
     }
 
-    previewSelectedImage(){
-        // check file.size before previewing
+    previewSelectedImage()
+    {
         this.inputFile.files[0] ? this.previewFile.src = URL.createObjectURL(this.inputFile.files[0]) : this.previewFile.src = "./assets/icons/picture-placeholder.png"
     }
 
@@ -372,14 +360,21 @@ class Modale {
     {
         const categories = await APIWrapper.getCategories()
 
-        this.#clearDropdown()
-        categories.forEach( el => 
+        if(categories !== "fetch error")
         {
-            let option = document.createElement("option")
-            option.value = el.id
-            option.textContent = el.name
-            this.dropdownCategories.append(option)
-        })
+            this.#clearDropdown()
+            categories.forEach( el => 
+            {
+                let option = document.createElement("option")
+                option.value = el.id
+                option.textContent = el.name
+                this.dropdownCategories.append(option)
+            })
+        }
+        else
+        {
+            // dropdown error
+        }
     }
 
     #scrollLock(bool = false)
@@ -410,9 +405,33 @@ class CustomFormData extends FormData {
 
     constructor(form) {
       super(form)
+
+      this.fileTypes = [
+        "image/jpeg",
+         "image/png"
+      ]
     }
 
-    process() {
+    #isValidFileType(file) 
+    {
+        return this.fileTypes.includes(file)
+    }
+
+    async #isValidCategory(category) 
+    {
+        const categories = await APIWrapper.getCategories()
+
+        if(categories !== "fetch error")
+        {
+            
+        }
+        else
+        {
+            // show error form
+        }
+    }
+
+    async process() {
         let formErrors = []
         const datas = {
             "file" : this.get("image"),
@@ -420,14 +439,16 @@ class CustomFormData extends FormData {
             "category" : this.get("category")
         }
 
-        if(datas.title.length < 1 && datas.title.length > 128) formErrors.push("Invalid Title")
+        if(datas.title.length < 1 && datas.title.length > 128) formErrors.push("Invalid Title") 
         if(parseInt(datas.category) === NaN) formErrors.push("Unknown Category") // verifier dans liste categories
-        if(datas.file.size < 1 || datas.file.size > 4200000 || datas.file.size === undefined) formErrors.push("Filesize Error")
+        if(datas.file.size < 1 || datas.file.size > 4200000 || datas.file.size === undefined || this.#isValidFileType(datas.file.type) !== true ) formErrors.push("Invalid File")
+        
         console.log(formErrors)
 
-        //const postResponse = APIWrapper.postWork(this)
+        // fetch error test
+        return formErrors.length === 0 ? await APIWrapper.pushWork(this) : formErrors
 
-        return formErrors.length === 0 ? APIWrapper.postWork(this) : formErrors
+        // if APIWrapper.pushWork === true sinon error
     }
   }
 
@@ -441,6 +462,13 @@ class Auth {
     AUTH : Helper related to the auth processes
     */
     //--------------
+
+    errorBox = document.querySelector('.login__errorbox')
+
+    static showError(withError)
+    {
+        errorBox.innerHTML=withError
+    }
 
     static isTokenAlive()
     {
@@ -517,7 +545,6 @@ function onloadIndex(){
     */
     //--------------
 
-    APIWrapper.convertImgtoBinString()
     gallery = new Gallery(".gallery",".filters")
     modale = new Modale("#opaque__container")
     gallery.displayGallery_filtered() // 0, blank = nofilter
