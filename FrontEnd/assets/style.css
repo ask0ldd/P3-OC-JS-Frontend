@@ -560,15 +560,23 @@ h3 {
   width: 100%;
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+  /*-moz-appearance: none;
+  -webkit-appearance: none;*/
 }
 
-.modale__body select {
+.modale__body select,
+.modale__body select option {
   font-family: "Work Sans";
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
   padding-left: 16px;
 }
+
+/*.modale__body select option {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}*/
 
 .grey__bg--whitetxt {
   background-color: #a7a7a7;
@@ -618,7 +626,7 @@ LOGIN PAGE
   padding: 16px 32px;
   width: 100%;
   color: #dd6666;
-  /*display: none;*/
+  display: none;
 }
 
 .uploadwork__errorbox {
@@ -629,5 +637,5 @@ LOGIN PAGE
   padding: 16px 32px;
   width: calc(100% - 66px);
   color: #dd6666;
-  /*display: none;*/
+  display: none;
 }

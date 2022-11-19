@@ -6,10 +6,6 @@ const editIcons = document.querySelectorAll(".edit__icon")
 const editTopBar = document.querySelector(".editionmode__topbar")
 const header = document.querySelector("#header")
 
-/*const APIErrors = ['Fetch Error', ]
-const formErrors = {'file' : 'File Size Error', 'category' : 'Unknown Category', 'title' : 'Incorrect Title', 'token' : 'Log First'}
-const logErrors = ['User Unknown', 'Not An Email']*/
-
 let gallery
 let modale
 
@@ -27,7 +23,6 @@ class APIWrapper {
         try
         {
             const token = Auth.getToken()
-
             if(token === false) return {"error" : "not connected"}
 
             let response = await fetch(`${api}works`, // delete useless params below
@@ -38,6 +33,8 @@ class APIWrapper {
                 },
                 body: formData     
             })
+
+            console.log(response)
 
             return response.ok ? true : "fetch error"
         }
@@ -105,7 +102,7 @@ class APIWrapper {
         {
             const token = Auth.getToken()
 
-            if(token === false) return {"error" : "not connected"}
+            if(token === false) return console.log("not connected.")
 
             let response = await fetch(`${api}works/${workId}`, // delete useless params below
             {
@@ -260,7 +257,6 @@ class Modale {
     constructor(modaleNode) 
     {
         this.ModaleNode_DOM = document.querySelector(modaleNode)
-        //this.modale = document.getElementById("opaque__container");
         this.currentBody = "editBody"
         this.editGallery = document.querySelector("#edition__gallery")
         this.editBody = document.querySelector("#body__edit")
@@ -271,10 +267,10 @@ class Modale {
         this.switchButton = document.querySelector("#addpicture__button")
         this.form = document.querySelector("#form__upload")
         this.formButton = document.querySelector("#upload__submitbutton")
+        this.formErrorBox = document.querySelector(".uploadwork__errorbox")
 
         this.inputFile.addEventListener("change", e => this.previewSelectedImage())
         this.switchButton.addEventListener("click", e => this.toggleBodies())
-        //this.formButton.addEventListener("click", e => this.submitForm(e))
         this.form.addEventListener("submit", e => this.submitForm(e))
         window.onclick = (event) =>
         {       
@@ -282,16 +278,20 @@ class Modale {
         }
     }
 
-    submitForm(e)
+    showFormError(error)
+    {
+        const formErrorBoxL = document.querySelector(".uploadwork__errorbox")
+        formErrorBoxL.innerHTML = error
+        formErrorBoxL.style.display = "block"
+        return false // correct / not here, into process
+    }
+
+    async submitForm(e)
     {
         e.preventDefault()
-        /*e.stopPropagation()
-        e.stopImmediatePropagation()*/
         const formData = new CustomFormData(this.form)
-        formData.process()
-        /*toggleBodies()*/
-        this.form.reset()
-        this.close()
+        let result = await formData.process(this.showFormError) // Passing callback to let the destination class manipulates showFormError
+        if(result !== false) this.close()
     }
 
     open()
@@ -299,8 +299,7 @@ class Modale {
         this.#scrollLock(true)
         this.ModaleNode_DOM.style.display = "flex"
         this.updateEditGallery()
-        // better to call when toggling
-        this.updateDropdownCategories()
+        this.form.reset()
     }
 
     close()
@@ -313,6 +312,7 @@ class Modale {
 
     toggleBodies()
     {
+        // handle back button
         if(this.currentBody !== "editBody")
         {
             this.editBody.style.display = "flex"
@@ -324,6 +324,7 @@ class Modale {
             this.editBody.style.display = "none"
             this.uploadBody.style.display = "flex" 
             this.currentBody = "uploadBody"
+            this.updateDropdownCategories()
         }
         
     }
@@ -380,6 +381,7 @@ class Modale {
 
     previewSelectedImage()
     {
+        // gerer si pas format image
         this.inputFile.files[0] ? this.previewFile.src = URL.createObjectURL(this.inputFile.files[0]) : this.previewFile.src = "./assets/icons/picture-placeholder.png"
     }
 
@@ -461,7 +463,8 @@ class CustomFormData extends FormData {
         }
     }
 
-    async process() {
+    async process(showErrorCallback) 
+    {
         let formErrors = []
         const datas = {
             "file" : this.get("image"),
@@ -469,16 +472,15 @@ class CustomFormData extends FormData {
             "category" : this.get("category")
         }
 
-        if(datas.title.length < 1 && datas.title.length > 128) formErrors.push("Invalid Title") 
-        if(parseInt(datas.category) === NaN && await this.#isValidCategory(datas.category)) formErrors.push("Unknown Category") // verifier dans liste categories
+        if(datas.title.length < 2 || datas.title.length > 128) formErrors.push("Invalid Title ;") 
+        if(parseInt(datas.category) === NaN && await this.#isValidCategory(datas.category)) formErrors.push("Unknown Category ;")
         if(datas.file.size < 1 || datas.file.size > 4200000 || datas.file.size === undefined || this.#isValidFileType(datas.file.type) !== true ) formErrors.push("Invalid File")
         
         console.log(formErrors)
   
         // fetch error test
-        //return formErrors.length === 0 ? await APIWrapper.pushWork(this) : formErrors
-
-        await APIWrapper.pushWork(this)
+        
+        return formErrors.length === 0 ? await APIWrapper.pushWork(this) : showErrorCallback(formErrors.reduce((a, c) => a + c, "")) // callback : showerror method from modale
 
         // if APIWrapper.pushWork === true sinon error
     }
@@ -495,23 +497,21 @@ class Auth {
     */
     //--------------
 
-    errorBox = document.querySelector('.login__errorbox')
-
-    static showError(withError)
+    #showError(withError)
     {
+        let errorBox = document.querySelector('.login__errorbox')
+        errorBox.style.display = "block"
         errorBox.innerHTML=withError
     }
 
     static isTokenAlive()
     {
-        // deal w/ errors : no cookie or no string type
         const cookie = document.cookie
         return cookie.search("token")===-1 ? false : true
     }
 
     static getToken()
-    {   // handle missing cookie
-        //document.cookie = "test1=Hello; SameSite=None; Secure";
+    {   
         const token = document.cookie.split('; ').find((cookie) => cookie.startsWith('token='))?.split('=')[1]
         return token !== undefined ? token : false
     }
@@ -528,7 +528,7 @@ class Auth {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(logs)        
+                body: JSON.stringify(logs)      
             })
 
             if(response.ok)
@@ -540,36 +540,28 @@ class Auth {
             }
             else
             {
-                this.showError("fetch error")
-                return "fetch error"
+                switch(response.status)
+                {
+                    case 404:
+                        this.#showError("User not found.")
+                        return "Fetch error"
+                    break;
+                    case 401:
+                        this.#showError("Not Authorized.")
+                        return "Fetch error"
+                    break;
+                    default:
+                        return "Fetch error"
+                }
             }
         }
         catch
         {
-            this.showError("fetch error")
-            return "fetch error"
+            this.#showError("Server Unavailable. Retry Later.")
+            return "Fetch error"
         }
 
-
-        /*
-        fetch(`${api}users/login`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(logs)        
-        }).then((response) => {
-            return response.json()
-        }).then((userDatas)=>{
-            document.cookie = `id=${userDatas.userId}; Secure`
-            document.cookie = `token=${userDatas.token}; Secure`
-            window.location.href = "index.html"
-        })*/
-
-        console.log("tried to log")
-
-        // error message > form when login failed
+        //console.log("tried to log")
     }
 
     static logout()
