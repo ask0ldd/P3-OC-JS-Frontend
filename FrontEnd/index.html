@@ -116,12 +116,12 @@
 <aside id="opaque__container">
 	<div id="modale__container">
 		<div id="modale__backnClose">
-			<img id="modale__arrow__back" src="./assets/icons/Arrow_Back.png" onclick="modale.toggleBodies()"><img id="modale_close" src="./assets/icons/cross.png" onclick="modale.close()">
+			<img id="modale__arrow__back" src="./assets/icons/Arrow_Back.png" alt="back" onclick="modale.toggleBodies()"><img id="modale_close" alt="close" src="./assets/icons/cross.png" onclick="modale.close()">
 		</div>
 
 		<!-- editGallery -->
 		<section class="modale__body" id="body__edit">
-			<h3>Gallerie Photo</h3>
+			<h3 id="edit__title"><a href="#" class="first__focus" disabled>Gallerie Photo</a></h3>
 			<div id="edition__gallery"></div>
 			<hr class="modale__hr">
 			<input class="modale__button" id="addpicture__button" type="button" value="Ajouter une photo">
@@ -136,18 +136,18 @@
 				<!--<input class="modale__button grey__bg--greentxt" type="button" value="+ Ajouter photo">-->
 				<div style="display:flex; flex-direction: column; align-items: center;">
 					<input type="file" id="filetoupload" name="image" accept="image/png, image/jpeg" required>
-					<label for="filetoupload" class="modale__button grey__bg--greentxt fileselect_button">+ Ajouter photo</label>
+					<label for="filetoupload" id="fileselect_button" class="fileselect_button modale__button grey__bg--greentxt">+ Ajouter photo</label>
 				</div>
 				<p style="font-size: 10px;">jpg, png : 4mo max</p>
 			</div>
 			<div id="uploadwork__errorbox" class="uploadwork__errorbox"></div>
-			<label for="title">Titre</label>
+			<label for="title"><a href="#" class="first__focus" disabled>Titre</a></label>
 			<input type="text" name="title" id="title" required>
 			<label for="category">Catégorie</label>
 			<select name="category" id="category">
 			</select>
 			<hr class="modale__hr">
-			<input class="modale__button grey__bg--whitetxt" type="submit" id="upload__submitbutton" value="Valider">
+			<input class="modale__button grey__bg--whitetxt" type="submit" id="upload__submitbutton" value="Valider" disabled>
 		</form>
 
 	</div>

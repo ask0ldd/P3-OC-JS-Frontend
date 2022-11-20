@@ -528,7 +528,6 @@ h3 {
 
 #addpic__container {
   background-color: #e8f1f6;
-  /*height: 168px;*/
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -537,7 +536,8 @@ h3 {
 }
 
 #addpic__container img {
-  width: 58px;
+  /*width: 58px;*/
+  max-height: 200px;
 }
 
 .modale__body {
@@ -573,12 +573,14 @@ h3 {
   width: 100%;
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+  color: #444;
   /*-moz-appearance: none;
   -webkit-appearance: none;*/
 }
 
 .modale__body select,
 .modale__body select option {
+  color: #444;
   font-family: "Work Sans";
   font-style: normal;
   font-weight: 500;
@@ -611,10 +613,11 @@ input[type="file"] {
   display: none;
 }
 
-.fileselect_button {
+#fileselect_button {
   cursor: pointer;
   border: none;
   color: #306685;
+  font-family: "Work Sans";
   font-size: 14px;
   font-weight: 500;
   width: fit-content;
@@ -622,8 +625,14 @@ input[type="file"] {
   padding-left: 32px;
 }
 
-.fileselect_button:hover {
+#fileselect_button:hover {
   color: #fff;
+}
+
+#upload__submitbutton:disabled {
+  background-color: #a7a7a7;
+  color: #fff;
+  border-color: #a7a7a7;
 }
 
 /*
@@ -651,4 +660,19 @@ LOGIN PAGE
   width: calc(100% - 66px);
   color: #dd6666;
   display: none;
+}
+
+.first__focus {
+  cursor: default;
+}
+
+.first__focus:hover,
+.first__focus:any-link {
+  text-decoration: none;
+  color: #000;
+}
+
+.first__focus:focus {
+  text-decoration: none;
+  outline: none;
 }

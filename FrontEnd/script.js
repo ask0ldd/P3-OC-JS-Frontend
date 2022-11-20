@@ -255,6 +255,10 @@ class Modale {
     */
     //--------------
 
+    #focusEditGallery
+    #focusUploadWork
+    #activeFocusBoundaries
+
     constructor(modaleNode) 
     {
         this.ModaleNode_DOM = document.querySelector(modaleNode)
@@ -271,6 +275,12 @@ class Modale {
         this.formButton = document.querySelector("#upload__submitbutton")
         this.formErrorBox = document.querySelector(".uploadwork__errorbox")
 
+        this.#focusEditGallery = [document.querySelector("#body__edit").querySelectorAll("a")[0], document.querySelector("#addpicture__button")]
+        //this.#focusUploadWork = [document.querySelector("#form__upload").querySelectorAll("a")[0], document.querySelector("#category")]
+        this.#focusUploadWork = [document.querySelector("#form__upload").querySelectorAll("a")[0], document.querySelector("#category")]
+
+        this.#activeFocusBoundaries = this.#focusEditGallery
+
         this.inputFile.addEventListener("change", e => this.previewSelectedImage())
         this.switchButton.addEventListener("click", e => this.toggleBodies())
         this.form.addEventListener("submit", e => this.submitForm(e))
@@ -285,6 +295,7 @@ class Modale {
         this.#scrollLock(true)
         this.ModaleNode_DOM.style.display = "flex"
         this.updateEditGallery()
+        this.#setTrapFocus()
         this.form.reset()
     }
 
@@ -310,6 +321,31 @@ class Modale {
         }
     }
 
+    #keyboardListener(e)
+    {
+        const KEYCODE_TAB = 9
+
+        const isTabPressed = (e.key === 'Tab' || e.keyCode === KEYCODE_TAB) // echap
+
+        if (!isTabPressed) return
+
+        if(e.shiftKey)
+        {
+            if (document.activeElement === this.#activeFocusBoundaries[0]) { this.#activeFocusBoundaries[1].focus(); e.preventDefault();}
+        }
+        else
+        {
+            if (document.activeElement === this.#activeFocusBoundaries[1]) { this.#activeFocusBoundaries[0].focus(); e.preventDefault()}
+        }
+    }
+
+    #setTrapFocus()
+    {
+        //arguments.callee
+        this.#activeFocusBoundaries[0].focus()
+        window.addEventListener('keydown', e => this.#keyboardListener(e)) // no need to remove cause close > reload index
+    }
+
     // *** SWITCH FROM A MODAL TO THE OTHER ONE
     toggleBodies()
     {
@@ -320,7 +356,9 @@ class Modale {
             this.uploadBody.style.display = "none"
             this.currentBody = "editBody"
             this.backButton.style.visibility = "hidden"
-        }
+            this.#activeFocusBoundaries = this.#focusEditGallery
+            this.#activeFocusBoundaries[0].focus()
+          }
         else
         {
             this.editBody.style.display = "none"
@@ -328,6 +366,8 @@ class Modale {
             this.currentBody = "uploadBody"
             this.updateDropdownCategories()
             this.backButton.style.visibility = "visible"
+            this.#activeFocusBoundaries = this.#focusUploadWork
+            this.#activeFocusBoundaries[0].focus()
         }
         
     }
