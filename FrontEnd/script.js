@@ -2,7 +2,7 @@ const api = 'http://localhost:5678/api/'
 
 const loginButton = document.querySelector("nav > ul > li:nth-child(3)")
 const contactButton = document.querySelector("nav > ul > li:nth-child(2)")
-const editIcons = document.querySelectorAll(".edit__icon")
+const editAnchors = document.querySelectorAll(".modifier")
 const editTopBar = document.querySelector(".editionmode__topbar")
 const header = document.querySelector("#header")
 
@@ -304,7 +304,7 @@ class Modale {
         this.currentBody !== "editBody" ? this.toggleBodies() : this.currentBody
         this.ModaleNode_DOM.style.display = "none"
         this.#scrollLock(false)
-        window.location.reload()
+        window.location.reload() // no need to remove eventlistener cause reload
     }
 
     #scrollLock(bool = false)
@@ -325,9 +325,14 @@ class Modale {
     {
         const KEYCODE_TAB = 9
 
-        const isTabPressed = (e.key === 'Tab' || e.keyCode === KEYCODE_TAB) // echap
+        const isTabPressed = (e.key === 'Tab' || e.keyCode === KEYCODE_TAB || e.keyCode == 27) // echap
 
         if (!isTabPressed) return
+
+        if(e.keyCode == 27)
+        {
+            return this.close()
+        }
 
         if(e.shiftKey)
         {
@@ -612,9 +617,9 @@ class Auth {
     }
 
     static adminMode(){
-        editIcons.forEach(el => 
+        editAnchors.forEach(el => 
             {
-                el.classList.toggle('edit__icon--on')
+                el.style.visibility = "visible"
             })
         editTopBar.classList.toggle('editionmode__topbar--on')
         header.classList.toggle('header__padding--notopBar')

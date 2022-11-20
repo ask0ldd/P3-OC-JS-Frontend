@@ -370,13 +370,13 @@ EDIT MODE CLASSES
 .edit__icon {
   height: 18px;
   width: 18px;
-  visibility: hidden;
+  /*visibility: hidden;*/
 }
 
-.edit__icon--on {
+/*.edit__icon--on {
   visibility: visible;
   cursor: pointer;
-}
+}*/
 
 .editionmode__topbar {
   height: 60px;
@@ -410,6 +410,18 @@ EDIT MODE CLASSES
 
 .header__padding--notopBar {
   padding-top: 50px;
+}
+
+.modifier {
+  color: #000;
+  font-size: 14px;
+  font-family: "Work Sans";
+  position: absolute;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  visibility: hidden;
 }
 
 /*

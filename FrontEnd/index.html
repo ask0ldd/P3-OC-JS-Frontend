@@ -13,7 +13,7 @@
 </head>
 <body onload="onloadIndex()">
 <header id="header" class="header__padding--notopBar">
-	<div class="editionmode__topbar"><div style="display:flex; align-items: center; column-gap: 10px;"><img style="margin-top:-3px;" src="./assets/icons/edit-white.png">Mode édition</div><div class="button__topbar">publier les changements</div></div>
+	<div class="editionmode__topbar"><div style="display:flex; align-items: center; column-gap: 10px;"><img style="margin-top:-3px;" alt="edit icon" src="./assets/icons/edit-white.png">Mode édition</div><div class="button__topbar">publier les changements</div></div>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
@@ -27,20 +27,31 @@
 </header>
 <main>
 	<section id="introduction">
-		<figure>
+		<figure style="position:relative;"> <!-- style -->
 			<img id="sophie" src="./assets/images/sophie-bluel.png" alt="sophie">
-			<img src="./assets/icons/edit.svg" class="edit__icon" onclick="modale.open()">
+			<a style="left: 57px; bottom: -40px;" class="modifier"><!-- style -->
+				<img src="./assets/icons/edit.svg" alt="edit icon" class="edit__icon" onclick="modale.open()">
+				<span style="margin-left:8px; margin-top: 1px;">modifier</span><!-- style -->
+			</a>
 		</figure>
-		<article>
-			<img src="./assets/icons/edit.svg" class="edit__icon" onclick="modale.open()">modifier <!--a centrer-->
-			<h2>Designer d'espace</h2>
+		<article style="position:relative;"><!-- style -->
+			<a style="left: 0px; top: 12px;" class="modifier"><!-- style -->
+				<img src="./assets/icons/edit.svg" alt="edit icon" class="edit__icon" onclick="modale.open()">
+				<span style="margin-left:8px; margin-top: 1px;">modifier</span><!-- style -->
+			</a>
+			<h2 style="margin-top:52px;">Designer d'espace</h2><!-- style -->
 			<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison finale du chantier.</p>
 			<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
 			<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG, décorateur(trice)</p>
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2>Mes Projets</h2>
+		<h2 style="position:relative;">Mes Projets
+			<a class="modifier"><!-- style -->
+				<img src="./assets/icons/edit.svg" alt="edit icon" class="edit__icon" onclick="modale.open()">
+				<span style="margin-left:8px; margin-top: 1px;">modifier</span><!-- style -->
+			</a>
+		</h2>
 		<div class="filters"></div>
 		<div class="gallery">
 			<!--<figure>
