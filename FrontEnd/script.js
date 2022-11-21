@@ -41,7 +41,7 @@ class APIWrapper {
         }
     }
 
-    static async logRequest (logs, showErrorCallback)
+    static async attemptLog (logs, showErrorCallback) // callback pertinent?
     {
         try{
             let response = await fetch(`${api}users/login`,
@@ -310,7 +310,7 @@ class Modale {
         this.dropdownCategories = document.querySelector("#category")
         this.inputFile = document.querySelector("#filetoupload")
         this.previewFile = document.querySelector("#preview__file")
-        this.switchButton = document.querySelector("#addpicture__button")
+        this.nextModalButton = document.querySelector("#addpicture__button")
         this.form = document.querySelector("#form__upload")
         this.formButton = document.querySelector("#upload__submitbutton")
         this.formErrorBox = document.querySelector(".uploadwork__errorbox")
@@ -322,8 +322,8 @@ class Modale {
         this.#activeFocusBoundaries = this.#focusEditGallery
 
         this.inputFile.addEventListener("change", e => this.previewSelectedImage())
-        this.switchButton.addEventListener("click", e => this.toggleBodies())
-        this.form.addEventListener("submit", e => this.submitForm(e))
+        this.nextModalButton.addEventListener("click", e => this.toggleBodies())
+        this.form.addEventListener("submit", e => this.processModalForm(e))
         window.onclick = (event) =>
         {       
             if (event.target == this.ModaleNode_DOM) this.close()
@@ -386,7 +386,6 @@ class Modale {
 
     #setFocusTrap()
     {
-        //arguments.callee
         this.#activeFocusBoundaries[0].focus()
         window.addEventListener('keydown', e => this.#keyboardListener(e)) // no need to remove cause close > reload index
     }
@@ -394,7 +393,6 @@ class Modale {
     // *** SWITCH FROM A MODAL TO THE OTHER ONE
     toggleBodies()
     {
-        // handle back button
         if(this.currentBody !== "editBody")
         {
             this.editBody.style.display = "flex"
@@ -460,20 +458,19 @@ class Modale {
         }
     }
 
-    showFormError(error)
+    showModalFormError(error)
     {
         const formErrorBoxL = document.querySelector(".uploadwork__errorbox")
         formErrorBoxL.innerHTML = error
         formErrorBoxL.style.display = "block"
-        return false // correct / not here, into process
     }
 
-    async submitForm(e)
+    async processModalForm(e)
     {
         e.preventDefault()
         const formData = new CustomFormData(this.form)
-        let result = await formData.process(this.showFormError) // Passing callback to let the destination class manipulates showFormError
-        if(result !== false) this.close()
+        let result = await formData.process(this.showModalFormError) // Passing callback to let the destination class manipulates showModalFormError
+        if(result !== "validation failed") this.close()
     }
 
     #clearDropdown()
@@ -486,8 +483,10 @@ class Modale {
 
     previewSelectedImage()
     {
-        // gerer si pas format image
-        this.inputFile.files[0] ? this.previewFile.src = URL.createObjectURL(this.inputFile.files[0]) : this.previewFile.src = "./assets/icons/picture-placeholder.png"
+        if(this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png"))
+        {
+            this.inputFile.files[0] ? this.previewFile.src = URL.createObjectURL(this.inputFile.files[0]) : this.previewFile.src = "./assets/icons/picture-placeholder.png"
+        }
     }
 
     async updateDropdownCategories()
@@ -507,7 +506,7 @@ class Modale {
         }
         else
         {
-            this.showFormError("Sorry. We can't retrieve existing categories")
+            this.showModalFormError("Sorry. We can't retrieve existing categories")
         }
     }
     
@@ -554,7 +553,7 @@ class CustomFormData extends FormData {
         }
     }
 
-    async process(showErrorCallback) 
+    async process(showModalFormErrorCallback) 
     {
         let formErrors = []
         const datas = {
@@ -568,7 +567,15 @@ class CustomFormData extends FormData {
         if(parseInt(datas.category) === NaN && await this.#isValidCategory(datas.category)) formErrors.push("Unknown Category ;")
         if(datas.file.size < 1 || datas.file.size > 4200000 || datas.file.size === undefined || this.#isValidFileType(datas.file.type) !== true ) formErrors.push("Invalid File")
                
-        return formErrors.length === 0 ? await APIWrapper.pushWork(this) : showErrorCallback(formErrors.reduce((a, c) => a + c, "")) // callback : showerror > modale form
+        if(formErrors.length === 0) 
+        {
+            await APIWrapper.pushWork(this)
+        }
+        else
+        {
+            showModalFormErrorCallback(formErrors.reduce((a, c) => a + c, "")) // callback : showModalFormErrorCallback
+            return "validation failed"
+        }
     }
   }
 
@@ -621,11 +628,13 @@ class Auth {
 
         if(password === undefined) return this.showError("Password missing.")
         if(password.length<6) return this.showError("Wrong password.")
+        // deal with email
 
-        await APIWrapper.logRequest(logs, this.showError)
+        await APIWrapper.attemptLog(logs, this.showError)
     }
 
-    static adminMode(){
+    static adminMode()
+    {
         editAnchors.forEach(el => 
             {
                 el.style.visibility = "visible"
