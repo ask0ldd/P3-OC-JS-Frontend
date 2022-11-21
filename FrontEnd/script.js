@@ -8,10 +8,7 @@ const header = document.querySelector("#header")
 
 let gallery
 let modale
-
-// !!! delete before final upload
-const user = {'email':'sophie.bluel@test.tld','password':'S0phie'}
-const unauthorizedUser = {'email':'ezaeaz.ezaeza@test.tld','password':'ezaeza'}
+let loginForm
 
 /* tests to implement : wrong endpoint, wrong ip, non existent work id, no work at all, selectedcategory non existent, empty gallery on server, empty categories
 */
@@ -41,6 +38,49 @@ class APIWrapper {
         catch(e)
         {
             return "fetch error"
+        }
+    }
+
+    static async logRequest (logs, showErrorCallback)
+    {
+        try{
+            let response = await fetch(`${api}users/login`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(logs)      
+            })
+
+            if(response.ok)
+            {
+                let userDatas = await response.json()
+                document.cookie = `id=${userDatas.userId}; Secure`
+                document.cookie = `token=${userDatas.token}; Secure`
+                window.location.href = "index.html"
+            }
+            else
+            {
+                switch(response.status)
+                {
+                    case 404:
+                        showErrorCallback("User not found.")
+                        return "Fetch error"
+                    break;
+                    case 401:
+                        showErrorCallback("Not Authorized.")
+                        return "Fetch error"
+                    break;
+                    default:
+                        return "Fetch error"
+                }
+            }
+        }
+        catch
+        {
+            showErrorCallback("Server Unavailable. Retry Later.")
+            return "Fetch error"
         }
     }
 
@@ -295,7 +335,7 @@ class Modale {
         this.#scrollLock(true)
         this.ModaleNode_DOM.style.display = "flex"
         this.updateEditGallery()
-        this.#setTrapFocus()
+        this.#setFocusTrap()
         this.form.reset()
     }
 
@@ -344,7 +384,7 @@ class Modale {
         }
     }
 
-    #setTrapFocus()
+    #setFocusTrap()
     {
         //arguments.callee
         this.#activeFocusBoundaries[0].focus()
@@ -543,7 +583,7 @@ class Auth {
     */
     //--------------
 
-    #showError(withError)
+    static showError(withError)
     {
         let errorBox = document.querySelector('.login__errorbox')
         errorBox.style.display = "block"
@@ -569,51 +609,20 @@ class Auth {
         window.location.href = "index.html"
     }
 
-    static async LogInAttempt()
+    static async processLogForm(e)
     {
-        // validate fields
-        let logs = {"email": user.email, "password": user.password} // new formData()
+        e.preventDefault()
 
-        // move to APIWrapper
-        try{
-            let response = await fetch(`${api}users/login`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(logs)      
-            })
+        const formData = new FormData(loginForm)
+        const email = formData.get("email")
+        const password = formData.get("password")
 
-            if(response.ok)
-            {
-                let userDatas = await response.json()
-                document.cookie = `id=${userDatas.userId}; Secure`
-                document.cookie = `token=${userDatas.token}; Secure`
-                window.location.href = "index.html"
-            }
-            else
-            {
-                switch(response.status)
-                {
-                    case 404:
-                        this.#showError("User not found.")
-                        return "Fetch error"
-                    break;
-                    case 401:
-                        this.#showError("Not Authorized.")
-                        return "Fetch error"
-                    break;
-                    default:
-                        return "Fetch error"
-                }
-            }
-        }
-        catch
-        {
-            this.#showError("Server Unavailable. Retry Later.")
-            return "Fetch error"
-        }
+        let logs = {"email": email, "password": password}
+
+        if(password === undefined) return this.showError("Password missing.")
+        if(password.length<6) return this.showError("Wrong password.")
+
+        await APIWrapper.logRequest(logs, this.showError)
     }
 
     static adminMode(){
@@ -642,4 +651,18 @@ function onloadIndex(){
     modale = new Modale("#opaque__container")
     gallery.displayGallery_filtered() // 0, blank = nofilter
     Auth.isTokenAlive() ? Auth.adminMode() : false // replace login par logout
+}
+
+/****/
+
+function onloadLog(){
+
+    //--------------
+    /*
+    MAIN LOG
+    */
+    //--------------
+
+    loginForm = document.querySelector('#login__form')
+    loginForm.addEventListener("submit", e => Auth.processLogForm(e))
 }

@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="./assets/style.css">
 	<script type="text/javascript" src="script.js" defer></script>
 </head>
-<body>
+<body onload="onloadLog()">
 <header class="header__padding--notopBar">
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
@@ -29,13 +29,12 @@
 	</section>
 	<section id="contact">
 		<h2>Log In</h2>
-		<form id="login__form" action="javascript:Auth.LogInAttempt()">
+		<form id="login__form">
 			<div class="login__errorbox">Error</div>
 			<label for="email">E-mail</label>
-			<!--<input type="email" name="email" id="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required> -->
-			<input type="email" name="email" id="email"> 
+			<input type="email" name="email" id="email" value="sophie.bluel@test.tld" required> 
 			<label for="password">Mot de Passe</label>
-			<input type="password" id="password" name="password" minlength="8" required>
+			<input type="password" id="password" name="password" value="S0phie" required>
 			<input type="submit" value="Se connecter">
 		</form>
 		<p class="forgot__password"><a href="#">Mot de passe oublié</a></p>

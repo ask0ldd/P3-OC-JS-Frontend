@@ -367,16 +367,15 @@ EDIT MODE CLASSES
 
 */
 
+.position--relative {
+  position: relative;
+}
+
 .edit__icon {
   height: 18px;
   width: 18px;
   /*visibility: hidden;*/
 }
-
-/*.edit__icon--on {
-  visibility: visible;
-  cursor: pointer;
-}*/
 
 .editionmode__topbar {
   height: 60px;
@@ -385,6 +384,7 @@ EDIT MODE CLASSES
   /*flex-shrink: 0;*/
   display: none;
   color: #fff;
+  z-index: 2;
 }
 
 .editionmode__topbar--on {
@@ -422,6 +422,11 @@ EDIT MODE CLASSES
   align-items: center;
   cursor: pointer;
   visibility: hidden;
+}
+
+.modifier span {
+  margin-left: 8px;
+  margin-top: 1px;
 }
 
 /*
