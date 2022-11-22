@@ -20,7 +20,7 @@ class APIWrapper {
         try
         {
             const token = Auth.getToken()
-            if(token === false) return {"error" : "not connected"}
+            if(token === false) return {"fetch error" : "not connected"}
 
             let response = await fetch(`${api}works`,
             {
@@ -132,7 +132,6 @@ class APIWrapper {
         }
 
         catch(e){
-            console.log(e)
             return "fetch error"
         }
     }
@@ -145,7 +144,7 @@ class APIWrapper {
 
             if(token === false) return console.log("not connected.")
 
-            let response = await fetch(`${api}works/${workId}`, // delete useless params below
+            let response = await fetch(`${api}works/${workId}`,
             {
                 method: 'DELETE',
                 headers: {
@@ -305,18 +304,13 @@ class Modale {
         this.currentBody = "editBody"
         this.editGallery = document.querySelector("#edition__gallery")
         this.editBody = document.querySelector("#body__edit")
-        this.uploadBody = document.querySelector("#form__upload")
-        this.backButton = document.querySelector("#modale__arrow__back")
-        this.dropdownCategories = document.querySelector("#category")
         this.inputFile = document.querySelector("#filetoupload")
-        this.previewFile = document.querySelector("#preview__file")
         this.nextModalButton = document.querySelector("#addpicture__button")
         this.form = document.querySelector("#form__upload")
         this.formButton = document.querySelector("#upload__submitbutton")
         this.formErrorBox = document.querySelector(".uploadwork__errorbox")
 
         this.#focusEditGallery = [document.querySelector("#body__edit").querySelectorAll("a")[0], document.querySelector("#addpicture__button")]
-        //this.#focusUploadWork = [document.querySelector("#form__upload").querySelectorAll("a")[0], document.querySelector("#category")]
         this.#focusUploadWork = [document.querySelector("#form__upload").querySelectorAll("a")[0], document.querySelector("#category")]
 
         this.#activeFocusBoundaries = this.#focusEditGallery
@@ -364,7 +358,6 @@ class Modale {
     #keyboardListener(e)
     {
         const KEYCODE_TAB = 9
-
         const isTabPressed = (e.key === 'Tab' || e.keyCode === KEYCODE_TAB || e.keyCode == 27) // echap
 
         if (!isTabPressed) return
@@ -393,22 +386,25 @@ class Modale {
     // *** SWITCH FROM A MODAL TO THE OTHER ONE
     toggleBodies()
     {
+        const uploadBody = document.querySelector("#form__upload")
+        const backButton = document.querySelector("#modale__arrow__back")
+
         if(this.currentBody !== "editBody")
         {
             this.editBody.style.display = "flex"
-            this.uploadBody.style.display = "none"
+            uploadBody.style.display = "none"
             this.currentBody = "editBody"
-            this.backButton.style.visibility = "hidden"
+            backButton.style.visibility = "hidden"
             this.#activeFocusBoundaries = this.#focusEditGallery
             this.#activeFocusBoundaries[0].focus()
           }
         else
         {
             this.editBody.style.display = "none"
-            this.uploadBody.style.display = "flex" 
+            uploadBody.style.display = "flex" 
             this.currentBody = "uploadBody"
             this.updateDropdownCategories()
-            this.backButton.style.visibility = "visible"
+            backButton.style.visibility = "visible"
             this.#activeFocusBoundaries = this.#focusUploadWork
             this.#activeFocusBoundaries[0].focus()
         }
@@ -475,22 +471,27 @@ class Modale {
 
     #clearDropdown()
     {
-        while (this.dropdownCategories.lastElementChild) 
+        const dropdownCategories = document.querySelector("#category")
+
+        while (dropdownCategories.lastElementChild) 
         {
-            this.dropdownCategories.removeChild(this.dropdownCategories.lastElementChild)
+            dropdownCategories.removeChild(dropdownCategories.lastElementChild)
         }
     }
 
     previewSelectedImage()
     {
+        const previewFile = document.querySelector("#preview__file")
+
         if(this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png"))
         {
-            this.inputFile.files[0] ? this.previewFile.src = URL.createObjectURL(this.inputFile.files[0]) : this.previewFile.src = "./assets/icons/picture-placeholder.png"
+            this.inputFile.files[0] ? previewFile.src = URL.createObjectURL(this.inputFile.files[0]) : previewFile.src = "./assets/icons/picture-placeholder.png"
         }
     }
 
     async updateDropdownCategories()
     {
+        const dropdownCategories = document.querySelector("#category")
         const categories = await APIWrapper.getCategories()
 
         if(categories !== "fetch error")
@@ -501,7 +502,7 @@ class Modale {
                 let option = document.createElement("option")
                 option.value = el.id
                 option.textContent = el.name
-                this.dropdownCategories.append(option)
+                dropdownCategories.append(option)
             })
         }
         else
@@ -518,7 +519,7 @@ class CustomFormData extends FormData {
 
     //--------------
     /*
-    Extends FormData to add a validation & process method
+    Extends FormData to add a validation & processing method
     */
     //--------------
 
@@ -569,12 +570,17 @@ class CustomFormData extends FormData {
                
         if(formErrors.length === 0) 
         {
-            await APIWrapper.pushWork(this)
+            let response = await APIWrapper.pushWork(this) 
+            if(response==="fetch error") 
+            {
+                showModalFormErrorCallback("Can't reach the API.")
+                return "validation failed" // !!! choose best message format {"failure" : "Can't reach the API ;"}
+            }
         }
         else
         {
             showModalFormErrorCallback(formErrors.reduce((a, c) => a + c, "")) // callback : showModalFormErrorCallback
-            return "validation failed"
+            return "validation failed" // !!! choose best message format {"failure" : "Can't reach the API."}
         }
     }
   }
@@ -652,14 +658,14 @@ function onloadIndex(){
 
     //--------------
     /*
-    MAIN
+    MAIN INDEX
     */
     //--------------
 
     gallery = new Gallery(".gallery",".filters")
     modale = new Modale("#opaque__container")
     gallery.displayGallery_filtered() // 0, blank = nofilter
-    Auth.isTokenAlive() ? Auth.adminMode() : false // replace login par logout
+    Auth.isTokenAlive() ? Auth.adminMode() : false
 }
 
 /****/
