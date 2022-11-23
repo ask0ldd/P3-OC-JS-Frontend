@@ -525,7 +525,7 @@ class Modale {
 
     isSubmitWorkButtonUnlockable()
     {
-        if(this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png")) 
+        /*if(this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png")) 
         {
             if(parseInt(document.querySelector("#category").value) !== NaN) 
             {
@@ -535,7 +535,13 @@ class Modale {
                 }
             }
         }
-        return false
+        return false*/
+
+        return (this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png")) 
+        ? document.querySelector("#title").value !== "" 
+        ? parseInt(document.querySelector("#category").value) !== NaN 
+        ? true 
+        : false : false : false
     }
     
 }
