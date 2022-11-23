@@ -620,6 +620,16 @@ h3 {
   padding-left: 16px;
 }
 
+.modale__body select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("./icons/select-arrow.png");
+  background-repeat: no-repeat;
+  background-position-x: calc(100% - 29px);
+  background-position-y: calc(50%);
+}
+
 /*.modale__body select option {
   -moz-appearance: none;
   -webkit-appearance: none;
