@@ -197,7 +197,7 @@ class Gallery {
             case "filters":
                 while (this.filtersContainer.lastElementChild) 
                 {
-                    this.filtersContainer.removeChild(this.filtersContainer.lastElementChild); // No innerHTML = "" to kill all addeventlistener attached to those childs
+                    this.filtersContainer.removeChild(this.filtersContainer.lastElementChild); // [i] No innerHTML = "" to kill all addeventlistener attached to those childs
                 }
             break;
             default:
@@ -506,7 +506,7 @@ class Modale {
         const dropdownCategories = document.querySelector("#category")
         const categories = await APIWrapper.getCategories()
 
-        if(categories !== "fetch error")
+        if(categories !== "fetch error") // error consistancy
         {
             this.#clearDropdown()
             categories.forEach( el => 
@@ -521,6 +521,21 @@ class Modale {
         {
             this.showModalFormError("Sorry. We can't retrieve existing categories")
         }
+    }
+
+    isSubmitWorkButtonUnlockable()
+    {
+        if(this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png")) 
+        {
+            if(parseInt(document.querySelector("#category").value) !== NaN) 
+            {
+                if(document.querySelector("#title").value !== "") 
+                { 
+                    return true
+                }
+            }
+        }
+        return false
     }
     
 }
@@ -593,7 +608,7 @@ class CustomFormData extends FormData {
         else
         {
             showModalFormErrorCallback(formErrors.reduce((a, c) => a + c, "")) // [i] callback : showModalFormErrorCallback
-            return false // !!! choose best message format {"failure" : "Can't reach the API."}
+            return false
         }
     }
   }
