@@ -10,11 +10,11 @@ let gallery
 let modale
 let loginForm
 
-/* tests to implement : wrong endpoint, wrong ip, non existent work id, no work at all, selectedcategory non existent, empty gallery on server, empty categories
-*/
+
 
 class APIWrapper {
 
+    // *** NEW WORK > DB
     static async pushWork(formData)
     {
         try
@@ -41,6 +41,7 @@ class APIWrapper {
         }
     }
 
+    // *** LOGIN ATTEMPT
     static async attemptLog (logs)
     {
         try{
@@ -84,6 +85,7 @@ class APIWrapper {
         }
     }
 
+    // *** GET ALL EXISTING CATEGORIES
     static async getCategories(){
         try
         {
@@ -124,6 +126,7 @@ class APIWrapper {
         return set*/
     }
 
+    // *** GET ALL WORKS
     static async getWorks()
     {
         try{
@@ -136,6 +139,7 @@ class APIWrapper {
         }
     }
 
+    // *** DELETE SOME WORK WITH A SPECIFIC ID
     static async deleteWork(workId)
     {
         try
@@ -335,6 +339,7 @@ class Modale {
         window.location.reload() // no need to remove eventlistener cause reload
     }
 
+    // *** LOCK THE SCROLLING
     #scrollLock(bool = false)
     {
         if(bool)
@@ -349,6 +354,7 @@ class Modale {
         }
     }
 
+    // *** ESCAPE / TAB / SHIFT+TAB LISTENED TO
     #keyboardListener(e)
     {
         const KEYCODE_TAB = 9
@@ -371,6 +377,7 @@ class Modale {
         }
     }
 
+    // *** TRAP THE FOCUS INTO THE MODAL WINDOW
     #setFocusTrap()
     {
         this.#activeFocusBoundaries[0].focus()
@@ -405,13 +412,14 @@ class Modale {
         
     }
 
-
+    // *** CALL A APIWRAPPER METHOD TO DELETE A SELECTED WORK
     async deleteWork(id)
     {
         await APIWrapper.deleteWork(id)
         await this.updateEditGallery()
     }
 
+    // *** CLEAR THE THUMBNAILS GALLERY
     #clearEditGallery()
     {
         while (this.editGallery.lastElementChild) 
@@ -420,6 +428,7 @@ class Modale {
         }
     }
 
+    // *** ADD A THUMBNAIL > MODAL
     #addThumbnail(work)
     {
         const div = document.createElement("div")
@@ -433,6 +442,7 @@ class Modale {
         this.editGallery.append(div)
     }
 
+    // *** UPDATE THE MODAL GALLERY
     async updateEditGallery()
     {
         const works = await APIWrapper.getWorks()
@@ -448,6 +458,7 @@ class Modale {
         }
     }
 
+    // *** SHOW SOME ERRORS WHEN UNABLE TO UPLOAD SOME NEW WORK
     showModalFormError(error)
     {
         const formErrorBoxL = document.querySelector(".uploadwork__errorbox")
@@ -455,6 +466,7 @@ class Modale {
         formErrorBoxL.style.display = "block"
     }
 
+    // *** PROCESS THE FORM DEDICATED TO THE UPLOAD OF NEW WORKS
     async processModalForm(e)
     {
         e.preventDefault()
@@ -463,6 +475,7 @@ class Modale {
         if(result !== "validation failed") this.close()
     }
 
+    // *** CLEAR THE CATEGORIES INTO THE DROPDOWN LIST > MODAL FORM
     #clearDropdown()
     {
         const dropdownCategories = document.querySelector("#category")
@@ -473,6 +486,7 @@ class Modale {
         }
     }
 
+    // *** PREVIEW SELECTED IMAGE TO UPLOAD > MODAL FORM
     previewSelectedImage()
     {
         const labelInputFile = document.querySelector("#fileselect_button")
@@ -487,6 +501,7 @@ class Modale {
         }
     }
 
+    // *** UPDATE THE CATEGORIES INTO THE DROPDOWN LIST > MODAL FORM
     async updateDropdownCategories()
     {
         const dropdownCategories = document.querySelector("#category")
@@ -552,6 +567,7 @@ class CustomFormData extends FormData {
         }
     }
 
+    // *** PROCESS THE MODAL FORM / VALIDATION
     async process(showModalFormErrorCallback) 
     {
         let formErrors = []
@@ -601,12 +617,14 @@ class Auth {
         errorBox.innerHTML=withError
     }
 
+    // *** CHECK IF THE LOGIN TOKEN IS ALIVE
     static isTokenAlive()
     {
         const cookie = document.cookie
         return cookie.search("token")===-1 ? false : true
     }
 
+    // *** GET THE VALUE OF THE LOGIN TOKEN
     static getToken()
     {   
         const token = document.cookie.split('; ').find((cookie) => cookie.startsWith('token='))?.split('=')[1]
@@ -620,6 +638,7 @@ class Auth {
         window.location.href = "index.html"
     }
 
+    // *** PROCESS THE LOGIN FORM
     static async processLogForm(e)
     {
         e.preventDefault()
@@ -636,9 +655,10 @@ class Auth {
 
         let response = await APIWrapper.attemptLog(logs)
 
-        if(response.error) {this.showError(response["error"])}
+        if(response.error) {this.showError(response.error)}
     }
 
+    // *** SWITCH THE INDEX PAGE TO ADMIN MODE WHEN TOKEN IS ALIVE
     static adminMode()
     {
         editAnchors.forEach(el => 
