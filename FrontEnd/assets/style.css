@@ -481,7 +481,7 @@ MODALE
 #edition__gallery {
   display: grid;
   width: 420px;
-  gap: 13px 8px;
+  gap: 13px 9px;
   grid-template-columns: repeat(5, 1fr);
   grid-auto-rows: 117px;
 }
