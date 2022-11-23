@@ -20,7 +20,7 @@ class APIWrapper {
         try
         {
             const token = Auth.getToken()
-            if(token === false) return {"fetch error" : "not connected"}
+            if(token === false) return {"fetch error" : "not connected"} // keep the error format consistant
 
             let response = await fetch(`${api}works`,
             {
@@ -41,7 +41,7 @@ class APIWrapper {
         }
     }
 
-    static async attemptLog (logs, showErrorCallback) // callback pertinent?
+    static async attemptLog (logs)
     {
         try{
             let response = await fetch(`${api}users/login`,
@@ -65,22 +65,22 @@ class APIWrapper {
                 switch(response.status)
                 {
                     case 404:
-                        showErrorCallback("User not found.")
-                        return "Fetch error"
+                        console.log(response.statusText)
+                        return {"error" : "User not found."}
                     break;
                     case 401:
-                        showErrorCallback("Not Authorized.")
-                        return "Fetch error"
+                        console.log(response.statusText)
+                        return {"error" : response.statusText}
                     break;
                     default:
-                        return "Fetch error"
+                        console.log(response.statusText)
+                        return {"error" : response.statusText}
                 }
             }
         }
         catch
         {
-            showErrorCallback("Server Unavailable. Retry Later.")
-            return "Fetch error"
+            return {"error" : "Service Unavailable. Retry Later."}
         }
     }
 
@@ -189,15 +189,12 @@ class Gallery {
     {
         switch(container) {
             case "gallery":
-                while (this.galleryContainer.lastElementChild) 
-                {
-                    this.galleryContainer.removeChild(this.galleryContainer.lastElementChild); // No innerHTML = "" to kill all addeventlistener attached to those childs
-                }
+                this.galleryContainer.innerHTML = ""
             break;
             case "filters":
                 while (this.filtersContainer.lastElementChild) 
                 {
-                    this.filtersContainer.removeChild(this.filtersContainer.lastElementChild);
+                    this.filtersContainer.removeChild(this.filtersContainer.lastElementChild); // No innerHTML = "" to kill all addeventlistener attached to those childs
                 }
             break;
             default:
@@ -205,10 +202,7 @@ class Gallery {
                 {
                     this.filtersContainer.removeChild(this.filtersContainer.lastElementChild);
                 }
-                while (this.galleryContainer.lastElementChild) 
-                {
-                    this.galleryContainer.removeChild(this.galleryContainer.lastElementChild);
-                }
+                this.galleryContainer.innerHTML = ""
         }
     }
 
@@ -636,7 +630,9 @@ class Auth {
         if(password.length<6) return this.showError("Wrong password.")
         // deal with email
 
-        await APIWrapper.attemptLog(logs, this.showError)
+        let response = await APIWrapper.attemptLog(logs)
+
+        if(response["error"]) {this.showError(response["error"])}
     }
 
     static adminMode()
