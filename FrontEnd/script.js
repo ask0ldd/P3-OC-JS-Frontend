@@ -20,7 +20,7 @@ class APIWrapper {
         try
         {
             const token = Auth.getToken()
-            if(token === false) return {"fetch error" : "not connected"} // keep the error format consistant
+            if(token === false) return {error : "Not connected"}
 
             let response = await fetch(`${api}works`,
             {
@@ -33,11 +33,11 @@ class APIWrapper {
 
             console.log(response)
 
-            return response.ok ? true : "fetch error" // keep the error format consistant
+            return response.ok ? true : {error : "Can't upload your work"}
         }
         catch(e)
         {
-            return "fetch error" // keep the error format consistant
+            return {error : "Fetch error"}
         }
     }
 
@@ -90,7 +90,6 @@ class APIWrapper {
         try
         {
             let response = await fetch(`${api}categories`)
-            //let response = await fetch(`${api}categoriess`) // test error
             return response.ok ? response.json() : "fetch error" // keep the error format consistant
         }
         catch(e)
@@ -106,7 +105,7 @@ class APIWrapper {
         let categories = []
 
         // check the nature of works, if works is missing or has the wrong format/type
-        // test work ? 
+        // test work ? test if no categories
         works.forEach( el => {
             if(pushedIds.includes(el.category.id) === false)
             {
@@ -336,7 +335,7 @@ class Modale {
         this.currentBody !== "editBody" ? this.toggleBodies() : this.currentBody
         this.ModaleNode_DOM.style.display = "none"
         this.#scrollLock(false)
-        window.location.reload() // no need to remove eventlistener cause reload
+        window.location.reload() // [i] No need to remove eventlistener cause reload
     }
 
     // *** LOCK THE SCROLLING
@@ -358,7 +357,7 @@ class Modale {
     #keyboardListener(e)
     {
         const KEYCODE_TAB = 9
-        const isTabPressed = (e.key === 'Tab' || e.keyCode === KEYCODE_TAB || e.keyCode == 27) // echap
+        const isTabPressed = (e.key === 'Tab' || e.keyCode === KEYCODE_TAB || e.keyCode == 27) // [i] echap
 
         if (!isTabPressed) return
 
@@ -381,7 +380,7 @@ class Modale {
     #setFocusTrap()
     {
         this.#activeFocusBoundaries[0].focus()
-        window.addEventListener('keydown', e => this.#keyboardListener(e)) // no need to remove cause close > reload index
+        window.addEventListener('keydown', e => this.#keyboardListener(e)) // [i] No need to remove cause close > reload index
     }
 
     // *** SWITCH FROM A MODAL TO THE OTHER ONE
@@ -471,8 +470,8 @@ class Modale {
     {
         e.preventDefault()
         const formData = new CustomFormData(this.form)
-        let result = await formData.process(this.showModalFormError) // Passing callback to let the destination class manipulates showModalFormError
-        if(result !== "validation failed") this.close()
+        let result = await formData.process(this.showModalFormError) // [i] Passing callback to let the destination class manipulates showModalFormError
+        if(result !== false) this.close()
     }
 
     // *** CLEAR THE CATEGORIES INTO THE DROPDOWN LIST > MODAL FORM
@@ -577,7 +576,7 @@ class CustomFormData extends FormData {
             "category" : this.get("category")
         }
 
-        // * validation process
+        // [i] validation process
         if(datas.title.length < 2 || datas.title.length > 128) formErrors.push("Invalid Title ;") 
         if(parseInt(datas.category) === NaN && await this.#isValidCategory(datas.category)) formErrors.push("Unknown Category ;")
         if(datas.file.size < 1 || datas.file.size > 4200000 || datas.file.size === undefined || this.#isValidFileType(datas.file.type) !== true ) formErrors.push("Invalid File")
@@ -585,16 +584,16 @@ class CustomFormData extends FormData {
         if(formErrors.length === 0) 
         {
             let response = await APIWrapper.pushWork(this) 
-            if(response==="fetch error") 
+            if(response.error) 
             {
-                showModalFormErrorCallback("Can't reach the API.")
-                return "validation failed" // !!! choose best message format {"failure" : "Can't reach the API ;"}
+                showModalFormErrorCallback(response.error)
+                return false
             }
         }
         else
         {
-            showModalFormErrorCallback(formErrors.reduce((a, c) => a + c, "")) // callback : showModalFormErrorCallback
-            return "validation failed" // !!! choose best message format {"failure" : "Can't reach the API."}
+            showModalFormErrorCallback(formErrors.reduce((a, c) => a + c, "")) // [i] callback : showModalFormErrorCallback
+            return false // !!! choose best message format {"failure" : "Can't reach the API."}
         }
     }
   }
@@ -617,14 +616,14 @@ class Auth {
         errorBox.innerHTML=withError
     }
 
-    // *** CHECK IF THE LOGIN TOKEN IS ALIVE
+    // *** CHECK IF THE AUTH TOKEN IS ALIVE
     static isTokenAlive()
     {
         const cookie = document.cookie
         return cookie.search("token")===-1 ? false : true
     }
 
-    // *** GET THE VALUE OF THE LOGIN TOKEN
+    // *** GET THE VALUE OF THE AUTH TOKEN
     static getToken()
     {   
         const token = document.cookie.split('; ').find((cookie) => cookie.startsWith('token='))?.split('=')[1]
@@ -651,14 +650,14 @@ class Auth {
 
         if(password === undefined) return this.showError("Password missing.")
         if(password.length<6) return this.showError("Wrong password.")
-        // deal with email
+        //!!! deal with email
 
         let response = await APIWrapper.attemptLog(logs)
 
         if(response.error) {this.showError(response.error)}
     }
 
-    // *** SWITCH THE INDEX PAGE TO ADMIN MODE WHEN TOKEN IS ALIVE
+    // *** SWITCH THE INDEX PAGE TO ADMIN MODE WHEN THE AUTH TOKEN IS ALIVE
     static adminMode()
     {
         editAnchors.forEach(el => 
@@ -684,7 +683,7 @@ function onloadIndex(){
 
     gallery = new Gallery(".gallery",".filters")
     modale = new Modale("#opaque__container")
-    gallery.displayGallery_filtered() // 0, blank = nofilter
+    gallery.displayGallery_filtered() // [i] 0, blank = nofilter
     Auth.isTokenAlive() ? Auth.adminMode() : false
 }
 
