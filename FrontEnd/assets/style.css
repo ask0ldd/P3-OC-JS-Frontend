@@ -465,7 +465,7 @@ MODALE
   justify-content: center;
 }
 
-#edition__gallery {
+/*#edition__gallery {
   display: flex;
   gap: 13px 8px;
   max-width: 420px;
@@ -475,6 +475,21 @@ MODALE
 #edition__gallery .thumb {
   height: 104px;
   width: 77px;
+  object-fit: cover;
+}*/
+
+#edition__gallery {
+  display: grid;
+  width: 420px;
+  gap: 13px 8px;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: 117px;
+}
+
+#edition__gallery .thumb {
+  max-height: 104px;
+  height: 100%;
+  width: 100%;
   object-fit: cover;
 }
 

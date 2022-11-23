@@ -523,7 +523,7 @@ class Modale {
         }
     }
 
-    isSubmitWorkButtonUnlockable()
+    shouldSubmitWorkButtonBeUnlocked()
     {
         /*if(this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png")) 
         {
@@ -598,8 +598,8 @@ class CustomFormData extends FormData {
         }
 
         // [i] validation process
-        if(datas.title.length < 2 || datas.title.length > 128) formErrors.push("Invalid Title ;") 
-        if(parseInt(datas.category) === NaN && await this.#isValidCategory(datas.category)) formErrors.push("Unknown Category ;")
+        if(datas.title.length < 2 || datas.title.length > 128) formErrors.push("Invalid Title; ") 
+        if(parseInt(datas.category) === NaN && await this.#isValidCategory(datas.category)) formErrors.push("Unknown Category; ")
         if(datas.file.size < 1 || datas.file.size > 4200000 || datas.file.size === undefined || this.#isValidFileType(datas.file.type) !== true ) formErrors.push("Invalid File")
                
         if(formErrors.length === 0) 
