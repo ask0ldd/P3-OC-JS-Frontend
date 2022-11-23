@@ -646,6 +646,10 @@ input[type="file"] {
   color: #fff;
 }
 
+.filesize {
+  font-size: 10px;
+}
+
 #upload__submitbutton:disabled {
   background-color: #a7a7a7;
   color: #fff;

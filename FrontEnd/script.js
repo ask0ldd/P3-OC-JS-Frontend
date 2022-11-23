@@ -33,11 +33,11 @@ class APIWrapper {
 
             console.log(response)
 
-            return response.ok ? true : "fetch error"
+            return response.ok ? true : "fetch error" // keep the error format consistant
         }
         catch(e)
         {
-            return "fetch error"
+            return "fetch error" // keep the error format consistant
         }
     }
 
@@ -66,21 +66,21 @@ class APIWrapper {
                 {
                     case 404:
                         console.log(response.statusText)
-                        return {"error" : "User not found."}
+                        return {error : "User not found."}
                     break;
                     case 401:
                         console.log(response.statusText)
-                        return {"error" : response.statusText}
+                        return {error : response.statusText}
                     break;
                     default:
                         console.log(response.statusText)
-                        return {"error" : response.statusText}
+                        return {error : response.statusText}
                 }
             }
         }
         catch
         {
-            return {"error" : "Service Unavailable. Retry Later."}
+            return {error : "Service Unavailable. Retry Later."}
         }
     }
 
@@ -89,11 +89,11 @@ class APIWrapper {
         {
             let response = await fetch(`${api}categories`)
             //let response = await fetch(`${api}categoriess`) // test error
-            return response.ok ? response.json() : "fetch error"
+            return response.ok ? response.json() : "fetch error" // keep the error format consistant
         }
         catch(e)
         {
-            return "fetch error"
+            return "fetch error" // keep the error format consistant
         }
     }
 
@@ -128,11 +128,11 @@ class APIWrapper {
     {
         try{
             let response = await fetch(`${api}works`)
-            return response.ok ? response.json() : "fetch error"
+            return response.ok ? response.json() : {error : "Fetch error."}
         }
 
         catch(e){
-            return "fetch error"
+            return {error : "Fetch error."}
         }
     }
 
@@ -142,7 +142,7 @@ class APIWrapper {
         {
             const token = Auth.getToken()
 
-            if(token === false) return console.log("not connected.")
+            if(token === false) return console.log({error : "Not connected"})
 
             let response = await fetch(`${api}works/${workId}`,
             {
@@ -152,11 +152,11 @@ class APIWrapper {
                 }   
             })
 
-            return response.ok ? false : "fetch error"
+            return response.ok ? false : {error : response.statusText}
         }
         catch(e)
         {
-            return "fetch error"
+            return {error : "Can't reach the API."}
         }
     }
 }
@@ -264,7 +264,7 @@ class Gallery {
     async displayGallery_filtered(selectedCategory = 0)
     {
         let allWorks = await APIWrapper.getWorks()
-        if(allWorks !== "fetch error")
+        if(!allWorks.error)
         {
             this.updateGallery(allWorks, selectedCategory)
             this.updateFilters(allWorks, selectedCategory)
@@ -437,14 +437,14 @@ class Modale {
     {
         const works = await APIWrapper.getWorks()
 
-        if(works !== "fetch error")
+        if(!works.error)
         {
             this.#clearEditGallery()
             works.forEach( el => this.#addThumbnail(el))
         }
         else
         {
-            // show error > editgallery
+            //!!! show error > editgallery
         }
     }
 
@@ -475,11 +475,15 @@ class Modale {
 
     previewSelectedImage()
     {
+        const labelInputFile = document.querySelector("#fileselect_button")
+        const fileSize = document.querySelector(".filesize")
         const previewFile = document.querySelector("#preview__file")
 
         if(this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png"))
         {
             this.inputFile.files[0] ? previewFile.src = URL.createObjectURL(this.inputFile.files[0]) : previewFile.src = "./assets/icons/picture-placeholder.png"
+            labelInputFile.style.display="none"
+            fileSize.style.display="none"
         }
     }
 
@@ -493,7 +497,7 @@ class Modale {
             this.#clearDropdown()
             categories.forEach( el => 
             {
-                let option = document.createElement("option")
+                const option = document.createElement("option")
                 option.value = el.id
                 option.textContent = el.name
                 dropdownCategories.append(option)
@@ -632,7 +636,7 @@ class Auth {
 
         let response = await APIWrapper.attemptLog(logs)
 
-        if(response["error"]) {this.showError(response["error"])}
+        if(response.error) {this.showError(response["error"])}
     }
 
     static adminMode()
