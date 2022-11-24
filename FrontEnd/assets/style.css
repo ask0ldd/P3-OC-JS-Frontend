@@ -207,6 +207,16 @@ li:hover {
   color: #b1663c;
 }
 
+.instagram {
+  width: 40px;
+  height: 40px;
+  background-image: url("./icons/instagram.png");
+}
+
+.instagram:hover {
+  background-image: url("./icons/instagram--on.png");
+}
+
 #introduction {
   display: flex;
   /*align-items: center;*/

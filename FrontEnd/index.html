@@ -13,7 +13,7 @@
 </head>
 <body onload="onloadIndex()">
 <header id="header" class="header__padding--notopBar">
-	<div class="editionmode__topbar"><div style="display:flex; align-items: center; column-gap: 10px;"><img style="margin-top:-3px;" alt="edit icon" src="./assets/icons/edit-white.png">Mode édition</div><div class="button__topbar">publier les changements</div></div>
+	<div class="editionmode__topbar"><div style="display:flex; align-items: center; column-gap: 10px;"><img style="margin-top:-3px;" alt="edit icon" src="./assets/icons/edit-white.png">Mode édition</div><div class="button__topbar">publier les changements</div></div><!-- style -->
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
@@ -21,7 +21,7 @@
 			<li><a href="#contact">contact</a></li>
 			<li id="button__login"><a href="log.html">login</a></li>
 			<li id="button__logout"><a href="javascript:Auth.logout()">logout</a></li>
-			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+			<li><div src="./assets/icons/instagram.png" class="instagram" alt="Instagram"></div></li>
 		</ul>
 	</nav>
 </header>
@@ -30,14 +30,12 @@
 		<figure class="position--relative">
 			<img id="sophie" src="./assets/images/sophie-bluel.png" alt="sophie">
 			<a style="left: 57px; bottom: -40px;" class="modifier" href="javascript:modale.open()"><!-- style -->
-				<img src="./assets/icons/edit.svg" alt="edit icon" class="edit__icon">
-				<span>modifier</span>
+				<img src="./assets/icons/modifier.png" alt="edit icon">
 			</a>
 		</figure>
 		<article class="position--relative">
 			<a style="left: 2px; top: 16px;" class="modifier" href="javascript:modale.open()"><!-- style -->
-				<img src="./assets/icons/edit.svg" alt="edit icon" class="edit__icon">
-				<span>modifier</span>
+				<img src="./assets/icons/modifier.png" alt="edit icon">
 			</a>
 			<h2 style="margin-top:52px;">Designer d'espace</h2><!-- style -->
 			<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison finale du chantier.</p>
@@ -47,9 +45,8 @@
 	</section>
 	<section id="portfolio">
 		<h2 class="position--relative">Mes Projets
-			<a style="left:690px; top:7px;" class="modifier" href="javascript:modale.open()">
-				<img src="./assets/icons/edit.svg" alt="edit icon" class="edit__icon">
-				<span>modifier</span>
+			<a style="left:690px; top:7px;" class="modifier" href="javascript:modale.open()"><!-- style -->
+				<img src="./assets/icons/modifier.png" alt="edit icon">
 			</a>
 		</h2>
 		<div class="filters"></div>
