@@ -90,11 +90,11 @@ class APIWrapper {
         try
         {
             let response = await fetch(`${api}categories`)
-            return response.ok ? response.json() : "fetch error" // keep the error format consistant
+            return response.ok ? response.json() : {error : "Fetch error"}
         }
         catch(e)
         {
-            return "fetch error" // keep the error format consistant
+            return {error : "Fetch error"}
         }
     }
 
@@ -509,7 +509,7 @@ class Modale {
         const dropdownCategories = document.querySelector("#category")
         const categories = await APIWrapper.getCategories()
 
-        if(categories !== "fetch error") // error consistancy
+        if(!categories.error) // error consistancy
         {
             this.#clearDropdown()
             categories.forEach( el => 
@@ -566,7 +566,7 @@ class CustomFormData extends FormData {
         const categories = await APIWrapper.getCategories()
         let ids = []
 
-        if(categories !== "fetch error")
+        if(!categories.error)
         {
             categories.forEach( el => ids.push(el.id))
             console.log(ids.includes(parseInt(category)))
