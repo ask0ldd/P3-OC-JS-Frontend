@@ -319,6 +319,9 @@ class Modale {
         {       
             if (event.target == this.ModaleNode_DOM) this.close()
         }
+        // Enable Modal Form Button if all inputs are populated
+        this.inputFile.addEventListener("change", e => this.#unlockFormButton())
+        document.querySelector("#title").addEventListener("change", e => this.#unlockFormButton())
     }
 
     open()
@@ -523,25 +526,13 @@ class Modale {
         }
     }
 
-    shouldSubmitWorkButtonBeUnlocked()
+    #unlockFormButton()
     {
-        /*if(this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png")) 
-        {
-            if(parseInt(document.querySelector("#category").value) !== NaN) 
-            {
-                if(document.querySelector("#title").value !== "") 
-                { 
-                    return true
-                }
-            }
-        }
-        return false*/
-
         return (this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png")) 
         ? document.querySelector("#title").value !== "" 
         ? parseInt(document.querySelector("#category").value) !== NaN 
-        ? true 
-        : false : false : false
+        ? this.formButton.disabled = false
+        : this.formButton.disabled = true : this.formButton.disabled = true : this.formButton.disabled = true
     }
     
 }
