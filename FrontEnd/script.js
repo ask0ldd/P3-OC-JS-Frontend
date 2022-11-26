@@ -213,7 +213,7 @@ class Gallery {
     #addFilter(filterName, filterId)
     {
         // should replace divs w/ button
-        let button = document.createElement("div")
+        const button = document.createElement("div")
         button.textContent = filterName
         button.addEventListener("click", () => 
         {
@@ -236,8 +236,8 @@ class Gallery {
     // *** ERROR > GALLERY
     #displayGalleryErrorMsg(error){
         this.clear()
-        let p = document.createElement("p")
-        let blankCell = document.createElement("p")
+        const p = document.createElement("p")
+        const blankCell = document.createElement("p")
         p.classList.add("gallery__errormsg")
         p.innerHTML = error ? `${error}<br><br>` : "Network Error. Can't display Gallery."
         this.galleryContainer.append(blankCell)
