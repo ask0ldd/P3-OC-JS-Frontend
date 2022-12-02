@@ -219,10 +219,12 @@ li:hover {
 
 #introduction {
   display: flex;
+  border: 1px solid red;
   /*align-items: center;*/
 }
 #introduction figure {
   flex: 1;
+  align-self: center;
 }
 #introduction figure #sophie {
   display: block;
@@ -293,6 +295,7 @@ li:hover {
   flex-direction: row;
   gap: 10px;
   margin: 50px auto;
+  justify-content: center;
 }
 
 .filter {
@@ -435,9 +438,10 @@ EDIT MODE CLASSES
   color: #000;
   font-size: 14px;
   font-family: "Work Sans";
-  position: absolute;
+  /*position: absolute;*/
+  float: left;
   font-weight: 400;
-  display: flex;
+  display: block;
   align-items: center;
   cursor: pointer;
   visibility: hidden;
