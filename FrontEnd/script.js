@@ -338,7 +338,8 @@ class Modale {
         this.currentBody !== "editBody" ? this.toggleBodies() : this.currentBody
         this.ModaleNode_DOM.style.display = "none"
         this.#scrollLock(false)
-        window.location.reload() // [i] No need to remove eventlistener cause reload
+        this.#unsetFocusTrap()
+        gallery.displayGallery_filtered()
     }
 
     // *** LOCK THE SCROLLING
@@ -384,6 +385,12 @@ class Modale {
     {
         this.#activeFocusBoundaries[0].focus()
         window.addEventListener('keydown', e => this.#keyboardListener(e)) // [i] No need to remove cause close > reload index
+    }
+
+    #unsetFocusTrap()
+    {
+        this.#activeFocusBoundaries[0].focus()
+        window.removeEventListener('keydown', e => this.#keyboardListener(e))
     }
 
     // *** SWITCH FROM A MODAL TO THE OTHER ONE

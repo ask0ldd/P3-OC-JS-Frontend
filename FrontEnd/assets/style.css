@@ -263,7 +263,7 @@ li:hover {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-column-gap: 20px;
-  grid-row-gap: 20px;
+  grid-row-gap: 30px;
 }
 
 .gallery__errormsg {
@@ -273,14 +273,23 @@ li:hover {
 }
 
 .gallery img {
+  display: block;
   width: 100%;
   max-height: 489px;
+  height: 100%;
   object-fit: cover;
+  /*object-fit: contain;
+  contain: size;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;*/
 }
 
 .filters {
   width: fit-content;
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   gap: 10px;
   margin: 50px auto;
@@ -288,7 +297,7 @@ li:hover {
 
 .filter {
   border-radius: 60px;
-  padding: 14px 28px;
+  padding: 1.2ch 2ch;
   font-family: "Syne";
   font-size: 16px;
   font-weight: 700;
