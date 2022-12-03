@@ -321,7 +321,8 @@ class Modale {
         }
         // Enable Modal Form Button if all inputs are populated
         this.inputFile.addEventListener("change", e => this.#unlockFormButton())
-        document.querySelector("#title").addEventListener("change", e => this.#unlockFormButton())
+        //document.querySelector("#title").addEventListener("change", e => this.#unlockFormButton())
+        document.querySelector("#title").addEventListener("input", e => this.#unlockFormButton())
     }
 
     open()
@@ -330,7 +331,7 @@ class Modale {
         this.ModaleNode_DOM.style.display = "flex"
         this.updateEditGallery()
         this.#setFocusTrap()
-        this.form.reset()
+        this.form.reset() // ajouter boutons file image resets
     }
 
     close()
@@ -340,6 +341,7 @@ class Modale {
         this.#scrollLock(false)
         this.#unsetFocusTrap()
         gallery.displayGallery_filtered()
+
     }
 
     // *** LOCK THE SCROLLING
@@ -681,7 +683,7 @@ class Auth {
     {
         editAnchors.forEach(el => 
             {
-                el.style.visibility = "visible"
+                el.style.display = "block"
             })
         editTopBar.classList.toggle('editionmode__topbar--on')
         header.classList.toggle('header__padding--notopBar')

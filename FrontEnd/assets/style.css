@@ -219,7 +219,7 @@ li:hover {
 
 #introduction {
   display: flex;
-  align-items: center;
+  /*align-items: center;*/
   width: 90%;
   margin-left: auto;
   margin-right: auto;
@@ -284,7 +284,7 @@ li:hover {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-column-gap: 20px;
-  grid-row-gap: 30px;
+  grid-row-gap: 20px;
   margin: 0 auto;
 }
 
@@ -294,13 +294,27 @@ li:hover {
   font-weight: 800;
 }
 
-.gallery img {
-  /*display: block;*/
+.gallery figure {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  max-height: calc (438px + 24px);
+}
+
+.gallery img {
+  display: block;
+  width: 100%;
+  height: 100%;
   max-height: 438px;
   /*max-height: 489px;*/
-  height: 100%;
   object-fit: cover;
+}
+
+.gallery figcaption {
+  height: 24px;
+  overflow: hidden;
+  width: 100%;
+  /*border: 1px solid red;*/
 }
 
 .filters {
@@ -455,22 +469,14 @@ EDIT MODE CLASSES
 }
 
 .modifier {
-  color: #000;
-  font-size: 14px;
-  font-family: "Work Sans";
-  /*position: absolute;*/
-  float: left;
-  font-weight: 400;
-  display: block;
-  align-items: center;
   cursor: pointer;
-  visibility: hidden;
+  display: none;
 }
 
-.modifier span {
+/*.modifier span {
   margin-left: 8px;
   margin-top: 1px;
-}
+}*/
 
 /*
 
@@ -780,6 +786,12 @@ LOGIN PAGE
     text-align: center;
   }
 
+  #introduction article a {
+    order: 2;
+    margin-top: 12px;
+    align-self: flex-end;
+  }
+
   /*nav ul {
     display: flex;
     align-items: center;
@@ -802,11 +814,16 @@ LOGIN PAGE
 
   .filter {
     font-size: 14px;
+    width: 35%;
   }
 
   #portfolio h2 {
     margin-top: 64px;
     flex-direction: column;
     row-gap: 16px;
+  }
+
+  .gallery figcaption {
+    height: 48px;
   }
 }
