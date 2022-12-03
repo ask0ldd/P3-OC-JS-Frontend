@@ -537,7 +537,8 @@ MODALE
 
 #edition__gallery .thumb {
   max-height: 104px;
-  height: 100%;
+  /*height: 100%;*/
+  height: 104px;
   width: 100%;
   object-fit: cover;
 }
