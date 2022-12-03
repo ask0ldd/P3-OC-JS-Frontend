@@ -258,6 +258,14 @@ li:hover {
 
 #introduction article {
   flex: 1;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+#introduction article a {
+  margin-bottom: 20px;
+  width: fit-content;
 }
 
 #introduction h2 {
@@ -454,6 +462,12 @@ EDIT MODE CLASSES
   font-size: 16px;
 }
 
+#mode__edition {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+
 .button__topbar {
   background-color: #fff;
   color: #000;
@@ -535,6 +549,16 @@ MODALE
   margin: 6px 6px 0 0;
 }
 
+#delete__allworks {
+  margin-top: 24px;
+  color: #d65353;
+  cursor: pointer;
+}
+
+#delete__allworks:hover {
+  text-decoration: underline;
+}
+
 #modale__backnClose {
   height: 14px;
   display: flex;
@@ -559,16 +583,11 @@ h3 {
   line-height: 30px;
   text-align: center;
   margin: 24px 0 36px 0;
-  /*background-color: red;*/
 }
 
 .modale__hr {
   width: 100%;
   margin-top: 48px;
-  /*border: none;
-  border: 1px solid #b3b3b3;
-  height: 1px;
-  width: 100%;*/
 }
 
 .modale__button {
@@ -600,15 +619,18 @@ h3 {
 }
 
 #addpic__container img {
-  /*width: 58px;*/
   max-height: 200px;
+}
+
+#inputfile__group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .modale__body {
   display: flex;
   flex-direction: column;
-  /*justify-content: center;*/
-  /*align-items: center;*/
   width: 420px;
 }
 
@@ -625,7 +647,6 @@ h3 {
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  /*line-height: 16px;*/
   color: #3d3d3d;
   margin: 2em 0 1em 0;
 }
@@ -638,8 +659,6 @@ h3 {
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
   color: #444;
-  /*-moz-appearance: none;
-  -webkit-appearance: none;*/
 }
 
 .modale__body select,

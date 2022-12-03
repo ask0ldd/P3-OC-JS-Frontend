@@ -14,7 +14,7 @@
 <body onload="onloadIndex()">
 <header id="header" class="header__padding--notopBar">
 	<div class="editionmode__topbar">
-		<div style="display:flex; align-items: center; column-gap: 10px;"><img alt="edit icon" src="./assets/icons/edit-white.png">Mode édition</div>
+		<div id="mode__edition"><img alt="edit icon" src="./assets/icons/edit-white.png">Mode édition</div>
 		<div class="button__topbar">publier les changements</div>
 	</div>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
@@ -38,11 +38,11 @@
 				</a>
 			</div>
 		</figure>
-		<article style="padding-top:20px;display:flex; flex-direction: column;">
-			<a class="modifier" style="margin-bottom:20px; width: fit-content;" href="javascript:modale.open()">
+		<article>
+			<a class="modifier" href="javascript:modale.open()">
 				<img src="./assets/icons/modifier.png" alt="edit icon">
 			</a>
-			<h2>Designer d'espace</h2><!-- style -->
+			<h2>Designer d'espace</h2>
 			<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison finale du chantier.</p>
 			<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
 			<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG, décorateur(trice)</p>
@@ -95,7 +95,7 @@
 			<div id="edition__gallery"></div>
 			<hr class="modale__hr">
 			<input class="modale__button" id="addpicture__button" type="button" value="Ajouter une photo">
-			<p style="margin-top:24px; color:#D65353; cursor: pointer;" onclick="modale.deleteAllWorks()">supprimer la gallerie</p>
+			<p id="delete__allworks" onclick="modale.deleteAllWorks()">supprimer la gallerie</p>
 		</section>
 
 		<!-- upload -->
@@ -104,7 +104,7 @@
 			<div id="addpic__container">
 				<img id="preview__file" alt="preview" src="./assets/icons/picture-placeholder.png">
 				<!--<input class="modale__button grey__bg--greentxt" type="button" value="+ Ajouter photo">-->
-				<div style="display:flex; flex-direction: column; align-items: center;">
+				<div id="inputfile__group">
 					<input type="file" id="filetoupload" name="image" accept="image/png, image/jpeg">
 					<label for="filetoupload" id="fileselect_button" class="fileselect_button modale__button grey__bg--greentxt">+ Ajouter photo</label>
 				</div>
