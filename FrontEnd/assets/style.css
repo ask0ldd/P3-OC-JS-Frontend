@@ -559,6 +559,17 @@ MODALE
   margin: 6px 6px 0 0;
 }
 
+#edition__gallery .move__icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 17px;
+  width: 17px;
+  cursor: pointer;
+  margin: 6px 29px 0 0;
+  display: none;
+}
+
 #delete__allworks {
   margin-top: 24px;
   color: #d65353;

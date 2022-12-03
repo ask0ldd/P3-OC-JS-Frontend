@@ -239,7 +239,7 @@ class Gallery {
         const p = document.createElement("p")
         const blankCell = document.createElement("p")
         p.classList.add("gallery__errormsg")
-        p.innerHTML = error ? `${error}<br><br>` : "Network Error. Can't display Gallery."
+        p.innerHTML = error ? `${error}<br><br>` : "Network Error. The Gallery can't be displayed."
         this.galleryContainer.append(blankCell)
         this.galleryContainer.append(p)
     }
@@ -312,16 +312,15 @@ class Modale {
 
         this.#activeFocusBoundaries = this.#focusEditGallery
 
-        this.inputFile.addEventListener("change", e => this.previewSelectedImage())
+        this.inputFile.addEventListener("change", e => this.#previewSelectedImage())
         this.nextModalButton.addEventListener("click", e => this.toggleBodies())
         this.form.addEventListener("submit", e => this.processModalForm(e))
         window.onclick = (event) =>
         {       
             if (event.target == this.ModaleNode_DOM) this.close()
         }
-        // Enable Modal Form Button if all inputs are populated
+        // [i] Enable Modal Form Button if all inputs are populated
         this.inputFile.addEventListener("change", e => this.#unlockFormButton())
-        //document.querySelector("#title").addEventListener("change", e => this.#unlockFormButton())
         document.querySelector("#title").addEventListener("input", e => this.#unlockFormButton())
     }
 
@@ -332,11 +331,11 @@ class Modale {
         this.updateEditGallery()
         document.querySelector("#modale__backnClose").style.justifyContent = "flex-end"
         this.#setFocusTrap()
-        this.form.reset() // ajouter boutons file image resets
     }
 
     close()
     {
+        this.#resetModalForm()
         this.currentBody !== "editBody" ? this.toggleBodies() : this.currentBody
         this.ModaleNode_DOM.style.display = "none"
         this.#scrollLock(false)
@@ -415,6 +414,7 @@ class Modale {
           }
         else
         {
+            this.#resetModalForm()
             this.editBody.style.display = "none"
             uploadBody.style.display = "flex" 
             this.currentBody = "uploadBody"
@@ -450,10 +450,12 @@ class Modale {
 
         div.style.position = "relative"
         div.innerHTML = `
-        <div style="display:flex; flex-direction:column;">
+        <div style="display:flex; flex-direction:column;" onmouseover="document.querySelector('#move${work.id}').style.display='block';" onmouseout="document.querySelector('#move${work.id}').style.display='none';">
         <img class="thumb" src="${work.imageUrl}" crossorigin="anonymous">
         <a href="#" style="font-size:12px; margin-top:4px;">éditer</a>
-        <img class="bin__icon" src="./assets/icons/bin_icon.png" onclick="modale.deleteWork(${work.id})">`
+        <img class="bin__icon" src="./assets/icons/bin_icon.png" onclick="modale.deleteWork(${work.id})">
+        <img id="move${work.id}" class="move__icon" src="./assets/icons/move_icon.png">
+        </div>`
         this.editGallery.append(div)
     }
 
@@ -502,15 +504,15 @@ class Modale {
     }
 
     // *** PREVIEW SELECTED IMAGE TO UPLOAD > MODAL FORM
-    previewSelectedImage()
+    #previewSelectedImage()
     {
         const labelInputFile = document.querySelector("#fileselect_button")
         const fileSize = document.querySelector(".filesize")
         const previewFile = document.querySelector("#preview__file")
 
-        if(this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png"))
+        if((this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png")) && this.inputFile.files[0])
         {
-            this.inputFile.files[0] ? previewFile.src = URL.createObjectURL(this.inputFile.files[0]) : previewFile.src = "./assets/icons/picture-placeholder.png"
+            previewFile.src = URL.createObjectURL(this.inputFile.files[0])
             labelInputFile.style.display="none"
             fileSize.style.display="none"
         }
@@ -539,13 +541,27 @@ class Modale {
         }
     }
 
+    // *** UNLOCK THE BUTTON OF THE FORM INTO THE MODAL IF CONDITIONS ARE MET
     #unlockFormButton()
     {
         return (this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png")) 
-        ? document.querySelector("#title").value !== "" 
+        ? document.querySelector("#title").value.length > 2 
         ? parseInt(document.querySelector("#category").value) !== NaN 
         ? this.formButton.disabled = false
         : this.formButton.disabled = true : this.formButton.disabled = true : this.formButton.disabled = true
+    }
+
+    #resetModalForm(){
+        const labelInputFile = document.querySelector("#fileselect_button")
+        const fileSize = document.querySelector(".filesize")
+        const previewFile = document.querySelector("#preview__file")
+
+        previewFile.src = "./assets/icons/picture-placeholder.png"
+        labelInputFile.style.display="block"
+        fileSize.style.display="block"
+        this.formButton.disabled = true
+
+        this.form.reset()
     }
     
     async deleteAllWorks()
@@ -689,7 +705,7 @@ class Auth {
 
         if(password === undefined) return this.showError("Password missing.")
         if(password.length<6) return this.showError("Wrong password.")
-        //!!! deal with email
+        if(email.length>64) return this.showError("Wrong email.")
 
         let response = await APIWrapper.attemptLog(logs)
 
