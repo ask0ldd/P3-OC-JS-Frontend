@@ -231,9 +231,9 @@ li:hover {
   /*align-self: center;*/
 }
 
-#introduction figure div {
+/*#introduction figure div {
   width: 100%;
-}
+}*/
 
 #introduction figure div a {
   clear: both;
@@ -485,6 +485,16 @@ EDIT MODE CLASSES
 .modifier {
   cursor: pointer;
   display: none;
+  /*height: 18px;*/
+  /*background-color: red;*/
+}
+
+.modifier__icon {
+  filter: contrast(100%) brightness(0%) saturate(0%) opacity(100%);
+}
+
+.modifier__icon:hover {
+  filter: contrast(100%) brightness(100%) saturate(100%) opacity(100%);
 }
 
 /*
