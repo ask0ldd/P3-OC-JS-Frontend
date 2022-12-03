@@ -471,7 +471,7 @@ class Modale {
         }
         else
         {
-            //!!! show error > editgallery
+            this.editGallery.innerHTML="<div style='width:420px; text-align:center; font-size:24px;'>Can't load the Gallery.</div>"
         }
     }
 
@@ -524,7 +524,7 @@ class Modale {
         const dropdownCategories = document.querySelector("#category")
         const categories = await APIWrapper.getCategories()
 
-        if(!categories.error) // error consistancy
+        if(!categories.error)
         {
             this.#clearDropdown()
             categories.forEach( el => 
@@ -544,7 +544,7 @@ class Modale {
     // *** UNLOCK THE BUTTON OF THE FORM INTO THE MODAL IF CONDITIONS ARE MET
     #unlockFormButton()
     {
-        return (this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png")) 
+        (this.inputFile.value.includes(".jpg") || this.inputFile.value.includes(".png")) 
         ? document.querySelector("#title").value.length > 2 
         ? parseInt(document.querySelector("#category").value) !== NaN 
         ? this.formButton.disabled = false
