@@ -9,14 +9,14 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script type="text/javascript" src="script.js" defer></script>
+	<script src="script.js" defer></script>
 </head>
 <body onload="onloadIndex()">
 <header id="header" class="header__padding--notopBar">
 	<div class="editionmode__topbar">
-		<div style="display:flex; align-items: center; column-gap: 10px;"><img style="margin-top:-3px;" alt="edit icon" src="./assets/icons/edit-white.png">Mode édition</div>
+		<div style="display:flex; align-items: center; column-gap: 10px;"><img alt="edit icon" src="./assets/icons/edit-white.png">Mode édition</div>
 		<div class="button__topbar">publier les changements</div>
-	</div><!-- style -->
+	</div>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
@@ -24,33 +24,35 @@
 			<li><a href="#contact">contact</a></li>
 			<li id="button__login"><a href="log.html">login</a></li>
 			<li id="button__logout"><a href="javascript:Auth.logout()">logout</a></li>
-			<li><div src="./assets/icons/instagram.png" class="instagram" alt="Instagram"></div></li>
+			<li><div class="instagram"></div></li>
 		</ul>
 	</nav>
 </header>
 <main>
 	<section id="introduction">
-		<figure class="position--relative">
-			<img id="sophie" src="./assets/images/sophie-bluel.png" alt="sophie">
-			<a style="left: 57px; bottom: -40px;" class="modifier" href="javascript:modale.open()">
-				<img src="./assets/icons/modifier.png" alt="edit icon">
-			</a>
+		<figure>
+			<div>
+				<img id="sophie" src="./assets/images/sophie-bluel.png" alt="sophie">
+				<a class="modifier" href="javascript:modale.open()">
+					<img src="./assets/icons/modifier.png" alt="edit icon">
+				</a>
+			</div>
 		</figure>
-		<article class="position--relative">
+		<article>
 			<!--<a style="left: 2px; top: 16px;" class="modifier" href="javascript:modale.open()">
 				<img src="./assets/icons/modifier.png" alt="edit icon">
 			</a>-->
-			<h2 style="margin-top:52px;">Designer d'espace</h2><!-- style -->
+			<h2 style="margin-top:26px;">Designer d'espace</h2><!-- style -->
 			<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison finale du chantier.</p>
 			<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
 			<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG, décorateur(trice)</p>
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2 class="position--relative">Mes Projets
-			<!--<a style="left:690px; top:7px;" class="modifier" href="javascript:modale.open()">
+		<h2>Mes Projets
+			<a href="javascript:modale.open()">
 				<img src="./assets/icons/modifier.png" alt="edit icon">
-			</a>-->
+			</a>
 		</h2>
 		<div class="filters"></div>
 		<div class="gallery">
@@ -100,7 +102,7 @@
 		<form class="modale__body modale__body--hidden" id="form__upload">
 			<h3>Ajout Photo</h3>
 			<div id="addpic__container">
-				<img id="preview__file" src="./assets/icons/picture-placeholder.png">
+				<img id="preview__file" alt="preview" src="./assets/icons/picture-placeholder.png">
 				<!--<input class="modale__button grey__bg--greentxt" type="button" value="+ Ajouter photo">-->
 				<div style="display:flex; flex-direction: column; align-items: center;">
 					<input type="file" id="filetoupload" name="image" accept="image/png, image/jpeg">

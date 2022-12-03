@@ -219,18 +219,32 @@ li:hover {
 
 #introduction {
   display: flex;
-  border: 1px solid red;
-  /*align-items: center;*/
+  align-items: center;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  column-gap: 40px;
 }
+
 #introduction figure {
   flex: 1;
-  align-self: center;
+  /*align-self: center;*/
 }
+
+#introduction figure div {
+  width: 100%;
+}
+
+#introduction figure div a {
+  clear: both;
+  float: left;
+  margin-top: 16px;
+}
+
 #introduction figure #sophie {
   display: block;
   margin: auto;
-  width: 80%;
-  /*position: relative;*/
+  width: 100%;
 }
 
 /*#sophie::after {
@@ -259,13 +273,19 @@ li:hover {
   text-align: center;
   margin-bottom: 1em;
   margin-top: 100px;
+  display: flex;
+  column-gap: 16px;
+  justify-content: center;
 }
+
 .gallery {
-  width: 100%;
+  width: 90%;
+  /*max-width: 940px;*/
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-column-gap: 20px;
   grid-row-gap: 30px;
+  margin: 0 auto;
 }
 
 .gallery__errormsg {
@@ -275,17 +295,12 @@ li:hover {
 }
 
 .gallery img {
-  display: block;
+  /*display: block;*/
   width: 100%;
-  max-height: 489px;
+  max-height: 438px;
+  /*max-height: 489px;*/
   height: 100%;
   object-fit: cover;
-  /*object-fit: contain;
-  contain: size;
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;*/
 }
 
 .filters {
@@ -328,12 +343,15 @@ li:hover {
   width: 50%;
   margin: auto;
 }
+
 #contact > * {
   text-align: center;
 }
+
 #contact h2 {
   margin-bottom: 20px;
 }
+
 #contact form {
   text-align: left;
   margin-top: 30px;
@@ -347,9 +365,11 @@ li:hover {
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
+
 #contact label {
   margin: 2em 0 1em 0;
 }
+
 #contact textarea {
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
@@ -389,10 +409,6 @@ EDIT MODE CLASSES
 
 */
 
-.position--relative {
-  position: relative;
-}
-
 .edit__icon {
   height: 18px;
   width: 18px;
@@ -407,6 +423,10 @@ EDIT MODE CLASSES
   display: none;
   color: #fff;
   z-index: 2;
+}
+
+.editionmode__topbar img {
+  margin-top: -3px;
 }
 
 .editionmode__topbar--on {
@@ -739,4 +759,54 @@ LOGIN PAGE
 .first__focus:focus {
   text-decoration: none;
   outline: none;
+}
+
+/** CELLPHONE TEMP **/
+
+@media screen and (max-width: 768px) {
+  h1 {
+    margin: 0 auto;
+  }
+
+  section {
+    margin: 24px;
+  }
+
+  #introduction {
+    flex-direction: column;
+  }
+
+  #introduction article h2 {
+    text-align: center;
+  }
+
+  /*nav ul {
+    display: flex;
+    align-items: center;
+    list-style-type: none;
+    margin: 0 auto;
+    border: 1px solid red;
+  }*/
+
+  #header nav {
+    width: 100%;
+  }
+
+  #header nav ul {
+    justify-content: center;
+  }
+
+  .filters {
+    row-gap: 20px;
+  }
+
+  .filter {
+    font-size: 14px;
+  }
+
+  #portfolio h2 {
+    margin-top: 64px;
+    flex-direction: column;
+    row-gap: 16px;
+  }
 }
