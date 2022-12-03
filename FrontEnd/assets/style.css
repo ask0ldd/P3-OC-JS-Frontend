@@ -473,11 +473,6 @@ EDIT MODE CLASSES
   display: none;
 }
 
-/*.modifier span {
-  margin-left: 8px;
-  margin-top: 1px;
-}*/
-
 /*
 
 MODALE
@@ -513,19 +508,6 @@ MODALE
   align-items: center;
   justify-content: center;
 }
-
-/*#edition__gallery {
-  display: flex;
-  gap: 13px 8px;
-  max-width: 420px;
-  flex-wrap: wrap;
-}
-
-#edition__gallery .thumb {
-  height: 104px;
-  width: 77px;
-  object-fit: cover;
-}*/
 
 #edition__gallery {
   display: grid;

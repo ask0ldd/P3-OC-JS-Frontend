@@ -247,7 +247,7 @@ class Gallery {
     // *** INSERT A PICTURE + TITLE > DOM
     #addToGallery(work)
     {
-        let figure = document.createElement("figure")
+        const figure = document.createElement("figure")
         figure.innerHTML = `<img src="${work.imageUrl}" alt="${work.title}" crossorigin="anonymous"><figcaption>${work.title}</figcaption>` // crossorigin=ano : CORS
         this.galleryContainer.append(figure)
     }
@@ -266,7 +266,7 @@ class Gallery {
 
     async displayGallery_filtered(selectedCategory = 0)
     {
-        let allWorks = await APIWrapper.getWorks()
+        const allWorks = await APIWrapper.getWorks()
         if(!allWorks.error)
         {
             this.updateGallery(allWorks, selectedCategory)
@@ -542,6 +542,20 @@ class Modale {
         ? parseInt(document.querySelector("#category").value) !== NaN 
         ? this.formButton.disabled = false
         : this.formButton.disabled = true : this.formButton.disabled = true : this.formButton.disabled = true
+    }
+    
+    async deleteAllWorks()
+    {
+        const allWorks = await APIWrapper.getWorks()
+        
+        if(!allWorks.error)
+        {
+            allWorks.forEach( work => {
+                APIWrapper.deleteWork(work.id)
+            })
+        }
+
+        this.close()
     }
     
 }
