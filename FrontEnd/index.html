@@ -86,21 +86,22 @@
 <aside id="opaque__container">
 	<div id="modale__container">
 		<div id="modale__backnClose">
-			<img id="modale__arrow__back" src="./assets/icons/Arrow_Back.png" alt="back" onclick="modale.toggleBodies()"><img id="modale_close" alt="close" src="./assets/icons/cross.png" onclick="modale.close()">
+			<a id="modale__backlink" href="javascript:modale.toggleBodies()"><img id="modale__arrow__back" src="./assets/icons/Arrow_Back.png" alt="back"></a>
+			<a id="modale__closelink" href="javascript:modale.close()"><img id="modale_close" alt="close" src="./assets/icons/cross.png"></a>
 		</div>
 
 		<!-- editGallery -->
 		<section class="modale__body" id="body__edit">
-			<h3 id="edit__title"><a href="#" class="first__focus" disabled>Gallerie Photo</a></h3>
+			<h3 id="edit__title">Gallerie Photo</h3>
 			<div id="edition__gallery"></div>
 			<hr class="modale__hr">
 			<input class="modale__button" id="addpicture__button" type="button" value="Ajouter une photo">
-			<p id="delete__allworks" onclick="modale.deleteAllWorks()">supprimer la gallerie</p>
+			<p id="delete__allworks" tabindex="0" onclick="modale.deleteAllWorks()">supprimer la gallerie</p>
 		</section>
 
 		<!-- upload -->
 		<form class="modale__body modale__body--hidden" id="form__upload">
-			<h3>Ajout Photo</h3>
+			<h3 id="upload__title">Ajout Photo</h3>
 			<div id="addpic__container">
 				<img id="preview__file" alt="preview" src="./assets/icons/picture-placeholder.png">
 				<!--<input class="modale__button grey__bg--greentxt" type="button" value="+ Ajouter photo">-->
@@ -111,7 +112,7 @@
 				<p class="filesize">jpg, png : 4mo max</p>
 			</div>
 			<div id="uploadwork__errorbox" class="uploadwork__errorbox"></div>
-			<label for="title"><a href="#" class="first__focus" disabled>Titre</a></label>
+			<label for="title">Titre</label>
 			<input type="text" name="title" id="title" required>
 			<label for="category">Catégorie</label>
 			<select name="category" id="category">

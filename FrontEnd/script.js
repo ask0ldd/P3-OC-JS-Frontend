@@ -307,8 +307,8 @@ class Modale {
         this.formButton = document.querySelector("#upload__submitbutton")
         this.formErrorBox = document.querySelector(".uploadwork__errorbox")
 
-        this.#focusEditGallery = [document.querySelector("#body__edit").querySelectorAll("a")[0], document.querySelector("#addpicture__button")]
-        this.#focusUploadWork = [document.querySelector("#form__upload").querySelectorAll("a")[0], document.querySelector("#category")]
+        this.#focusEditGallery = [document.querySelector("#modale__closelink"), document.querySelector("#delete__allworks")]
+        this.#focusUploadWork = [document.querySelector("#modale__backlink"), document.querySelector("#category")]
 
         this.#activeFocusBoundaries = this.#focusEditGallery
 
@@ -330,6 +330,7 @@ class Modale {
         this.#scrollLock(true)
         this.ModaleNode_DOM.style.display = "flex"
         this.updateEditGallery()
+        document.querySelector("#modale__backnClose").style.justifyContent = "flex-end"
         this.#setFocusTrap()
         this.form.reset() // ajouter boutons file image resets
     }
@@ -399,14 +400,16 @@ class Modale {
     toggleBodies()
     {
         const uploadBody = document.querySelector("#form__upload")
-        const backButton = document.querySelector("#modale__arrow__back")
+        const backLink = document.querySelector("#modale__backlink")
+        const modalIcons = document.querySelector("#modale__backnClose")
 
         if(this.currentBody !== "editBody")
         {
             this.editBody.style.display = "flex"
             uploadBody.style.display = "none"
             this.currentBody = "editBody"
-            backButton.style.visibility = "hidden"
+            modalIcons.style.justifyContent = "flex-end"
+            backLink.style.display = "none"
             this.#activeFocusBoundaries = this.#focusEditGallery
             this.#activeFocusBoundaries[0].focus()
           }
@@ -416,7 +419,8 @@ class Modale {
             uploadBody.style.display = "flex" 
             this.currentBody = "uploadBody"
             this.updateDropdownCategories()
-            backButton.style.visibility = "visible"
+            modalIcons.style.justifyContent = "space-between"
+            backLink.style.display = "block"
             this.#activeFocusBoundaries = this.#focusUploadWork
             this.#activeFocusBoundaries[0].focus()
         }

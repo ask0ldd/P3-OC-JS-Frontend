@@ -562,17 +562,12 @@ MODALE
 #modale__backnClose {
   height: 14px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 564px;
 }
 
-#modale__arrow__back {
-  visibility: hidden;
-  cursor: pointer;
-}
-
-#modale_close {
-  cursor: pointer;
+#modale__backlink {
+  display: none;
 }
 
 h3 {
