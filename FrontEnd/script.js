@@ -104,8 +104,6 @@ class APIWrapper {
         let pushedIds = []
         let categories = []
 
-        // check the nature of works, if works is missing or has the wrong format/type
-        // test work ? test if no categories
         works.forEach( el => {
             if(pushedIds.includes(el.category.id) === false)
             {
@@ -115,14 +113,6 @@ class APIWrapper {
         })
 
         return categories
-
-        /*let set = new Set()
-        for(let i=0; i<Object.keys(works).length; i++)
-        {
-            set.add(works[i].category.name)
-        }
-        console.log(set)
-        return set*/
     }
 
     // *** GET ALL WORKS
