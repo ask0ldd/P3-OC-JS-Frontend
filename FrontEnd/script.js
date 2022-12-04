@@ -310,15 +310,17 @@ class Modale {
         this.#focusEditGallery = [document.querySelector("#modale__closelink"), document.querySelector("#delete__allworks")]
         this.#focusUploadWork = [document.querySelector("#modale__backlink"), document.querySelector("#category")]
 
-        this.#activeFocusBoundaries = this.#focusEditGallery
+        this.#activeFocusBoundaries = [...this.#focusEditGallery] // [i] without [...] : Reference type
 
         this.inputFile.addEventListener("change", e => this.#previewSelectedImage())
         this.nextModalButton.addEventListener("click", e => this.toggleBodies())
         this.form.addEventListener("submit", e => this.processModalForm(e))
+        
         window.onclick = (event) =>
         {       
             if (event.target == this.ModaleNode_DOM) this.close()
         }
+
         // [i] Enable Modal Form Button if all inputs are populated
         this.inputFile.addEventListener("change", e => this.#unlockFormButton())
         document.querySelector("#title").addEventListener("input", e => this.#unlockFormButton())
@@ -409,7 +411,7 @@ class Modale {
             this.currentBody = "editBody"
             modalIcons.style.justifyContent = "flex-end"
             backLink.style.display = "none"
-            this.#activeFocusBoundaries = this.#focusEditGallery
+            this.#activeFocusBoundaries = [...this.#focusEditGallery] // [i] without ... : Reference
             this.#activeFocusBoundaries[0].focus()
           }
         else
@@ -421,7 +423,7 @@ class Modale {
             this.updateDropdownCategories()
             modalIcons.style.justifyContent = "space-between"
             backLink.style.display = "block"
-            this.#activeFocusBoundaries = this.#focusUploadWork
+            this.#activeFocusBoundaries = [...this.#focusUploadWork]
             this.#activeFocusBoundaries[0].focus()
         }
         
@@ -549,6 +551,8 @@ class Modale {
         ? parseInt(document.querySelector("#category").value) !== NaN 
         ? this.formButton.disabled = false
         : this.formButton.disabled = true : this.formButton.disabled = true : this.formButton.disabled = true
+        
+        this.formButton.disabled === false ? this.#activeFocusBoundaries[1] = document.querySelector("#upload__submitbutton") : this.#activeFocusBoundaries[1] = this.#focusUploadWork[1]
     }
 
     #resetModalForm(){
