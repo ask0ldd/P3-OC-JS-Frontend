@@ -219,7 +219,6 @@ li:hover {
 
 #introduction {
   display: flex;
-  /*align-items: center;*/
   width: 90%;
   margin-left: auto;
   margin-right: auto;
@@ -228,7 +227,6 @@ li:hover {
 
 #introduction figure {
   flex: 1;
-  /*align-self: center;*/
 }
 
 /*#introduction figure div {
@@ -246,15 +244,6 @@ li:hover {
   margin: auto;
   width: 100%;
 }
-
-/*#sophie::after {
-  content: "rzarzaazre";
-  display: block;
-  position: absolute;
-  top: 200px;
-  left: 10px;
-  color: red;
-}*/
 
 #introduction article {
   flex: 1;
@@ -322,7 +311,6 @@ li:hover {
   height: 24px;
   overflow: hidden;
   width: 100%;
-  /*border: 1px solid red;*/
 }
 
 .filters {
@@ -356,7 +344,6 @@ li:hover {
 
 .filter--unselected {
   background: #fffef8;
-  /*border: 1px solid #1d6154;*/
   color: #1d6154;
   cursor: pointer;
 }
@@ -434,14 +421,12 @@ EDIT MODE CLASSES
 .edit__icon {
   height: 18px;
   width: 18px;
-  /*visibility: hidden;*/
 }
 
 .editionmode__topbar {
   height: 60px;
   width: 100%;
   background-color: #000;
-  /*flex-shrink: 0;*/
   display: none;
   color: #fff;
   z-index: 2;
@@ -485,8 +470,6 @@ EDIT MODE CLASSES
 .modifier {
   cursor: pointer;
   display: none;
-  /*height: 18px;*/
-  /*background-color: red;*/
 }
 
 .modifier__icon {
@@ -510,7 +493,6 @@ MODALE
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.3);
-  /*display: flex;*/
   justify-content: center;
   display: none;
   overflow: auto;
@@ -521,7 +503,6 @@ MODALE
   margin-top: 64px;
   height: fit-content;
   flex-shrink: 0;
-  /*max-height: 80vh;*/
   width: 630px;
   max-width: 100vh;
   background-color: #fff;
@@ -543,7 +524,6 @@ MODALE
 
 #edition__gallery .thumb {
   max-height: 104px;
-  /*height: 100%;*/
   height: 104px;
   width: 100%;
   object-fit: cover;
@@ -809,14 +789,6 @@ LOGIN PAGE
     margin-top: 12px;
     align-self: flex-end;
   }
-
-  /*nav ul {
-    display: flex;
-    align-items: center;
-    list-style-type: none;
-    margin: 0 auto;
-    border: 1px solid red;
-  }*/
 
   #header nav {
     width: 100%;
