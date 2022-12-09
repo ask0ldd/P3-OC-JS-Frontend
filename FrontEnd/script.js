@@ -22,7 +22,7 @@ class APIWrapper {
             const token = Auth.getToken()
             if(token === false) return {error : "Not connected"}
 
-            let response = await fetch(`${api}works`,
+            const response = await fetch(`${api}works`,
             {
                 method: 'POST',
                 headers: {
@@ -45,7 +45,7 @@ class APIWrapper {
     static async attemptLog (logs)
     {
         try{
-            let response = await fetch(`${api}users/login`,
+            const response = await fetch(`${api}users/login`,
             {
                 method: 'POST',
                 headers: {
@@ -56,7 +56,7 @@ class APIWrapper {
 
             if(response.ok)
             {
-                let userDatas = await response.json()
+                const userDatas = await response.json()
                 document.cookie = `id=${userDatas.userId}; Secure`
                 document.cookie = `token=${userDatas.token}; Secure`
                 window.location.href = "index.html"
@@ -89,7 +89,7 @@ class APIWrapper {
     static async getCategories(){
         try
         {
-            let response = await fetch(`${api}categories`)
+            const response = await fetch(`${api}categories`)
             return response.ok ? response.json() : {error : "Fetch error"}
         }
         catch(e)
@@ -119,7 +119,7 @@ class APIWrapper {
     static async getWorks()
     {
         try{
-            let response = await fetch(`${api}works`)
+            const response = await fetch(`${api}works`)
             return response.ok ? response.json() : {error : "Fetch error."}
         }
 
@@ -137,7 +137,7 @@ class APIWrapper {
 
             if(token === false) return console.log({error : "Not connected"})
 
-            let response = await fetch(`${api}works/${workId}`,
+            const response = await fetch(`${api}works/${workId}`,
             {
                 method: 'DELETE',
                 headers: {
@@ -202,7 +202,6 @@ class Gallery {
     // *** INSERT A FILTER > DOM
     #addFilter(filterName, filterId)
     {
-        // should replace divs w/ button
         const button = document.createElement("div")
         button.textContent = filterName
         button.addEventListener("click", () => 
@@ -220,7 +219,7 @@ class Gallery {
         this.selectedCategory = selectedCategory
         this.clear("filters")
         this.#addFilter("Tous", 0)
-        APIWrapper.parseCategories(works).forEach(el => this.#addFilter(el.name, el.id))
+        APIWrapper.parseCategories(works).forEach(el => this.#addFilter(el.name, el.id)) // extrait de works pas de second call a l'api
     }
 
     // *** ERROR > GALLERY
@@ -297,7 +296,7 @@ class Modale {
         this.formButton = document.querySelector("#upload__submitbutton")
         this.formErrorBox = document.querySelector(".uploadwork__errorbox")
 
-        this.#focusEditGallery = [document.querySelector("#modale__closelink"), document.querySelector("#delete__allworks")]
+        this.#focusEditGallery = [document.querySelector("#modale__closelink"), document.querySelector("#delete__allworks")] // bornes
         this.#focusUploadWork = [document.querySelector("#modale__backlink"), document.querySelector("#category")]
 
         this.#activeFocusBoundaries = [...this.#focusEditGallery] // [i] without [...] : Reference type
@@ -378,7 +377,7 @@ class Modale {
     #setFocusTrap()
     {
         this.#activeFocusBoundaries[0].focus()
-        window.addEventListener('keydown', e => this.#keyboardListener(e)) // [i] No need to remove cause close > reload index
+        window.addEventListener('keydown', e => this.#keyboardListener(e))
     }
 
     #unsetFocusTrap()
@@ -480,7 +479,7 @@ class Modale {
     {
         e.preventDefault()
         const formData = new CustomFormData(this.form)
-        let result = await formData.process(this.showModalFormError) // [i] Passing callback to let the destination class manipulates showModalFormError
+        const result = await formData.process(this.showModalFormError) // [i] Passing callback to let the destination class manipulates showModalFormError
         if(result !== false) this.close()
     }
 
@@ -632,7 +631,7 @@ class CustomFormData extends FormData {
                
         if(formErrors.length === 0) 
         {
-            let response = await APIWrapper.pushWork(this) 
+            const response = await APIWrapper.pushWork(this) 
             if(response.error) 
             {
                 showModalFormErrorCallback(response.error)
@@ -660,7 +659,7 @@ class Auth {
 
     static showError(withError)
     {
-        let errorBox = document.querySelector('.login__errorbox')
+        const errorBox = document.querySelector('.login__errorbox')
         errorBox.style.display = "block"
         errorBox.innerHTML=withError
     }
@@ -695,13 +694,13 @@ class Auth {
         const email = formData.get("email")
         const password = formData.get("password")
 
-        let logs = {"email": email, "password": password}
+        const logs = {"email": email, "password": password}
 
         if(password === undefined) return this.showError("Password missing.")
         if(password.length<6) return this.showError("Wrong password.")
         if(email.length>64) return this.showError("Wrong email.")
 
-        let response = await APIWrapper.attemptLog(logs)
+        const response = await APIWrapper.attemptLog(logs)
 
         if(response.error) {this.showError(response.error)}
     }
