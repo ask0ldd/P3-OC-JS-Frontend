@@ -841,4 +841,8 @@ LOGIN PAGE
     width: 80%;
     margin: 0 auto;
   }
+
+  footer nav ul {
+    justify-content: center;
+  }
 }
