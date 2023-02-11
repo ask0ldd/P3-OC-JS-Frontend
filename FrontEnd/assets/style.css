@@ -845,4 +845,54 @@ LOGIN PAGE
   footer nav ul {
     justify-content: center;
   }
+
+  /* NEW */
+
+  #modale__container {
+    width: 80%;
+  }
+
+  #modale__backnClose {
+    width: 90%;
+  }
+
+  #edition__gallery {
+    width: 80%;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0 auto;
+    grid-auto-rows: auto;
+    column-gap: 12px;
+  }
+
+  #edition__gallery .thumb {
+    max-height: 140px;
+    height: 140px;
+  }
+
+  .modale__body__form {
+    width: 90%;
+  }
+
+  .modale__hr {
+    width: 80%;
+    margin-top: 48px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #edition__gallery {
+    width: 70%;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 16px;
+  }
+
+  #edition__gallery .thumb {
+    max-height: 190px;
+    height: 190px;
+  }
+
+  .modale__hr {
+    width: 70%;
+    margin-top: 48px;
+  }
 }
